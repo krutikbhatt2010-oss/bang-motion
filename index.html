@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="hi">
+<!-- Built with Bang Motion (https://github.com/bangtutorial/bang-motion) — 9:16 Visual Journalism + Cinematic Abyss -->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mariana Trench — धरती के 11 KM नीचे क्या छिपा है?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Khand:wght@600;700&family=Noto+Sans+Devanagari:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06080D;
+  --ink:#F6F4EE;
+  --mute:#9EA9BA;
+  --gold:#FFD400;
+  --cyan:#2EE6FF;
+  --red:#FF4638;
+  --deep:#091426;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#030508;overflow:hidden;user-select:none}
+#stage{
+  position:absolute;left:50%;top:50%;
+  width:1080px;height:1920px;overflow:hidden;
+  background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans Devanagari","Plus Jakarta Sans",system-ui,sans-serif;
+}
+#world{position:absolute;inset:0;transform-origin:0 0;will-change:transform}
+#filters{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
+
+/* Continuous oceanic backdrop spanning all 5 spatial zones */
+.abyss-bg{
+  position:absolute;left:-1000px;top:-1000px;width:5200px;height:10400px;
+  background:
+    radial-gradient(1100px 900px at 1540px 1400px,rgba(24,116,184,.28),transparent 70%),
+    radial-gradient(1200px 1000px at 3160px 3200px,rgba(255,180,30,.12),transparent 70%),
+    radial-gradient(1200px 1100px at 1640px 4900px,rgba(20,220,255,.16),transparent 70%),
+    radial-gradient(1100px 1000px at 3240px 6400px,rgba(255,65,50,.12),transparent 70%),
+    radial-gradient(1400px 1200px at 1640px 8100px,rgba(32,140,255,.22),transparent 72%),
+    linear-gradient(180deg,#081A30 0%,#050B16 28%,#04070D 65%,#030509 100%);
+}
+.grain{
+  position:absolute;left:-1000px;top:-1000px;width:5200px;height:10400px;
+  pointer-events:none;opacity:.13;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Deterministic marine snow canvas */
+#snow{position:absolute;inset:0;pointer-events:none;z-index:12;mix-blend-mode:screen}
+
+/* Photography cuts inside #world */
+.cut{
+  position:absolute;opacity:0;overflow:hidden;
+  border-radius:26px;
+  box-shadow:0 36px 90px rgba(0,0,0,.78),0 0 0 1px rgba(255,255,255,.09);
+  will-change:transform,filter,opacity;
+}
+.cut.full{border-radius:0;box-shadow:none}
+.cut img{display:block;width:100%;height:100%;object-fit:cover;transform-origin:center center;will-change:transform}
+.cut::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(6,8,13,.22) 0%,transparent 32%,transparent 62%,rgba(6,8,13,.9) 100%);
+}
+
+/* Ghost numbers/words inside #world */
+.ghost{
+  position:absolute;opacity:0;pointer-events:none;white-space:nowrap;
+  font-family:"Teko",sans-serif;font-weight:700;font-size:340px;line-height:.84;
+  letter-spacing:-.02em;color:transparent;
+  -webkit-text-stroke:3px rgba(246,244,238,.14);
+}
+
+/* World-space documentary tags & editorial stamps (always >= 32px) */
+.tag{
+  position:absolute;opacity:0;white-space:nowrap;
+  font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:32px;letter-spacing:.11em;
+  color:var(--ink);padding:14px 22px;
+  background:rgba(7,10,18,.84);backdrop-filter:blur(8px);
+  border-left:6px solid var(--gold);border-radius:6px;
+  box-shadow:0 14px 34px rgba(0,0,0,.55);
+}
+.tag.cyan{border-left-color:var(--cyan)}
+.tag.red{border-left-color:var(--red)}
+
+.stamp{
+  position:absolute;opacity:0;white-space:nowrap;
+  font-family:"Khand","Teko",sans-serif;font-weight:700;font-size:50px;letter-spacing:.06em;
+  padding:12px 26px;border:5px solid var(--red);border-radius:10px;
+  color:var(--red);background:rgba(12,6,8,.82);
+  transform:rotate(-5deg);box-shadow:0 16px 40px rgba(255,70,56,.25);
+}
+
+/* In-world big metric / title blocks */
+.metric-box{
+  position:absolute;opacity:0;
+  padding:22px 30px;border-radius:18px;
+  background:rgba(8,12,22,.84);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 24px 60px rgba(0,0,0,.65);
+}
+.metric-lbl{
+  font-family:"IBM Plex Mono",monospace;font-size:30px;font-weight:600;
+  letter-spacing:.12em;color:var(--mute);margin-bottom:4px;
+}
+.metric-val{
+  font-family:"Teko",sans-serif;font-size:108px;font-weight:700;line-height:.88;
+  font-variant-numeric:tabular-nums;color:var(--gold);
+}
+.metric-val.cyan{color:var(--cyan)}
+.metric-val.red{color:var(--red)}
+
+/* SVG annotations & instruments */
+.anno{position:absolute;overflow:visible;pointer-events:none}
+.anno-draw{opacity:0}
+
+/* World-space Hindi/English callout labels (max 2 text levels per beat) */
+.world-title{
+  position:absolute;opacity:0;
+  font-family:"Khand","Noto Sans Devanagari",sans-serif;
+  font-weight:700;font-size:88px;line-height:1.02;
+  color:var(--ink);text-shadow:0 8px 34px rgba(0,0,0,.85);
+}
+
+/* ================= HUD LAYER (outside #world) ================= */
+.vig{
+  position:absolute;inset:0;pointer-events:none;z-index:15;
+  background:radial-gradient(85% 74% at 50% 48%,transparent 48%,rgba(3,5,9,.72) 100%);
+}
+/* Live depth HUD meter top-left inside safe zone */
+.hud-depth{
+  position:absolute;left:72px;top:110px;z-index:22;
+  display:flex;align-items:center;gap:18px;
+  padding:14px 24px;border-radius:14px;
+  background:rgba(7,10,18,.78);border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 12px 32px rgba(0,0,0,.5);
+}
+.hud-dot{
+  width:16px;height:16px;border-radius:50%;background:var(--cyan);
+  box-shadow:0 0 18px var(--cyan);
+}
+.hud-txt{
+  font-family:"IBM Plex Mono",monospace;font-size:32px;font-weight:600;
+  letter-spacing:.08em;font-variant-numeric:tabular-nums;color:var(--ink);
+}
+.hud-bar{
+  position:absolute;right:72px;top:128px;z-index:22;
+  width:210px;height:10px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;
+}
+.hud-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--gold),var(--red));border-radius:99px}
+
+/* Dark luminance pocket under animated captions (guarantee <=25% luminance behind text) */
+.cap-pocket{
+  position:absolute;left:0;right:0;bottom:0;height:680px;z-index:20;pointer-events:none;
+  background:linear-gradient(180deg,transparent 0%,rgba(4,6,11,.68) 38%,rgba(3,5,9,.94) 100%);
+}
+
+/* ================= BEST-IN-CLASS ANIMATED HINDI CAPTIONS ================= */
+#captions{
+  position:absolute;left:76px;right:76px;bottom:230px;z-index:25;
+  min-height:220px;display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.cap-phrase{
+  position:absolute;left:0;right:0;text-align:center;
+  font-family:"Noto Sans Devanagari","Plus Jakarta Sans",sans-serif;
+  font-weight:800;font-size:56px;line-height:1.28;letter-spacing:-.005em;
+  color:var(--ink);
+  text-shadow:0 6px 26px rgba(0,0,0,.92),0 2px 6px rgba(0,0,0,.95);
+  opacity:0;will-change:transform,filter,opacity;
+}
+.cw{
+  display:inline-block;position:relative;margin:0 .13em;
+  padding:.03em .06em;border-radius:12px;
+  color:rgba(246,244,238,.86);
+  transform-origin:50% 65%;
+  will-change:transform,color;
+}
+/* Active spoken word pop */
+.cw.active{
+  color:#FFFFFF;
+  text-shadow:0 4px 24px rgba(46,230,255,.45),0 4px 16px rgba(0,0,0,.95);
+}
+/* Highlighted key words with animated pill/underline */
+.cw.hl{isolation:isolate;padding:.04em .22em;color:#FFE97D;transition:color .14s ease}
+.cw.hl.cyan{color:#9EF4FF}
+.cw.hl.red{color:#FFB4AD}
+.cw.hl.filled{color:#080B12;text-shadow:none}
+.cw.hl.red.filled{color:#FFFFFF;text-shadow:0 2px 10px rgba(0,0,0,.45)}
+.cw.hl::before{
+  content:"";position:absolute;inset:2px -2px 0;z-index:-1;border-radius:12px;
+  background:linear-gradient(100deg,#FFB800,var(--gold));
+  transform:scaleX(var(--p,0));transform-origin:0 50%;
+  box-shadow:0 8px 28px rgba(255,212,0,.35);
+}
+.cw.hl.cyan::before{
+  background:linear-gradient(100deg,#00B8E6,var(--cyan));
+  box-shadow:0 8px 28px rgba(46,230,255,.4);
+}
+.cw.hl.red::before{
+  background:linear-gradient(100deg,#D9261C,var(--red));
+  box-shadow:0 8px 28px rgba(255,70,56,.42);
+}
+
+/* Minimal gesture-gate icon only if browser blocks autoplay with audio (no text banner) */
+#gate{
+  position:absolute;inset:0;z-index:40;display:none;
+  align-items:center;justify-content:center;cursor:pointer;
+  background:rgba(4,6,11,.28);
+}
+#gate-btn{
+  width:150px;height:150px;border-radius:50%;
+  background:rgba(10,15,26,.82);border:3px solid rgba(255,212,0,.9);
+  display:grid;place-items:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.7),0 0 40px rgba(255,212,0,.25);
+  transition:transform .2s ease;
+}
+#gate:hover #gate-btn{transform:scale(1.06)}
+
+/* Hidden debug scrub bar (?debug=1) */
+#dbg{
+  position:fixed;left:50%;bottom:16px;transform:translateX(-50%);
+  display:none;gap:12px;align-items:center;padding:10px 16px;border-radius:14px;
+  background:rgba(12,16,26,.92);color:#d7deec;font:14px system-ui;z-index:60;
+  border:1px solid rgba(255,255,255,.15);
+}
+#dbg input{width:340px}#dbg span{font-variant-numeric:tabular-nums;min-width:6ch}
+#dlBtn{
+  position:fixed;top:16px;right:16px;z-index:70;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 18px;border-radius:999px;
+  background:rgba(10,14,24,.88);color:#FFD400;
+  border:1.5px solid rgba(255,212,0,.55);
+  font:600 14px/1 "Plus Jakarta Sans",system-ui,sans-serif;
+  text-decoration:none;backdrop-filter:blur(8px);
+  box-shadow:0 8px 24px rgba(0,0,0,.45);
+  transition:transform .15s ease,background .15s ease;
+}
+#dlBtn:hover{transform:translateY(-1px);background:rgba(255,212,0,.16)}
+</style>
+</head>
+<body>
+<a id="dlBtn" href="/download" download="mariana-trench-hindi-short.mp4">⬇ Download MP4 (32 MB)</a>
+<svg id="filters"><defs></defs></svg>
+
+<div id="stage">
+  <div id="world">
+    <div class="abyss-bg"></div>
+    <div class="grain"></div>
+
+    <!-- ================= ZONE 1: SURFACE -> MARIANA TRENCH & EVEREST (center ~540,960) ================= -->
+    <div class="ghost" id="g1" style="left:90px;top:160px">10,984 M</div>
+    <div class="cut full" id="cut1a" style="left:-120px;top:-120px;width:1320px;height:2280px">
+      <img src="assets/scene1-ocean-trench.png" alt="Pacific Ocean Mariana Trench">
+    </div>
+    <div class="cut" id="cut1b" style="left:80px;top:360px;width:620px;height:940px">
+      <img src="assets/scene1b-everest-submerged.png" alt="Mount Everest Submerged">
+    </div>
+
+    <!-- Depth Ruler SVG comparing Everest (8,849m) vs Mariana Trench (10,984m) -->
+    <svg class="anno" id="rulerSvg" style="left:725px;top:360px;width:300px;height:980px" viewBox="0 0 300 980">
+      <line class="anno-draw" id="rLine" x1="40" y1="20" x2="40" y2="940" stroke="#2EE6FF" stroke-width="6" stroke-linecap="round"/>
+      <line class="anno-draw" id="rWater" x1="20" y1="20" x2="260" y2="20" stroke="#2EE6FF" stroke-width="5"/>
+      <line class="anno-draw" id="rPeak" x1="20" y1="210" x2="260" y2="210" stroke="#FFD400" stroke-width="6" stroke-dasharray="14 12"/>
+      <line class="anno-draw" id="rFloor" x1="20" y1="940" x2="260" y2="940" stroke="#FF4638" stroke-width="6"/>
+      <rect class="anno-draw" id="rGap" x="28" y="20" width="24" height="190" rx="6" fill="rgba(255,212,0,0.35)" stroke="#FFD400" stroke-width="3"/>
+    </svg>
+
+    <div class="tag cyan" id="tag1a" style="left:755px;top:395px">+2,135 M पानी</div>
+    <div class="tag" id="tag1b" style="left:755px;top:585px">EVEREST: 8,849 M</div>
+    <div class="tag red" id="tag1c" style="left:110px;top:1340px">CHALLENGER DEEP · -10,984 M</div>
+
+    <!-- ================= ZONE 2: CRUSHING PRESSURE (center ~2160, 2350) ================= -->
+    <div class="ghost" id="g2" style="left:1620px;top:1480px">1,086 BAR</div>
+    <div class="cut full" id="cut2" style="left:1480px;top:1260px;width:1360px;height:2280px">
+      <img src="assets/scene2-submersible.png" alt="Deep sea submersible">
+    </div>
+
+    <!-- Spotlight pulse & pressure comparison metric -->
+    <div class="metric-box" id="mPressure" style="left:1690px;top:1640px;width:540px">
+      <div class="metric-lbl">WATER PRESSURE</div>
+      <div class="metric-val" id="valPressure">0 BAR</div>
+    </div>
+
+    <div class="metric-box" id="mJets" style="left:1690px;top:2560px;width:930px">
+      <div class="metric-lbl">EQUIVALENT WEIGHT ON HUMAN BODY</div>
+      <div style="display:flex;align-items:baseline;gap:22px;margin-top:6px">
+        <div class="metric-val red" id="valJets">0</div>
+        <div style="font-family:'Teko',sans-serif;font-size:66px;font-weight:600;color:#F6F4EE">JUMBO JETS</div>
+      </div>
+      <div style="margin-top:14px;height:18px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden">
+        <div id="jetBar" style="height:100%;width:0%;background:linear-gradient(90deg,#FFD400,#FF4638);border-radius:99px"></div>
+      </div>
+    </div>
+
+    <div class="tag" id="tag2" style="left:2120px;top:1980px">0% SUNLIGHT ZONE</div>
+
+    <!-- ================= ZONE 3: BIOLUMINESCENT ALIEN LIFE (center ~640, 4150) ================= -->
+    <div class="ghost" id="g3" style="left:120px;top:3300px">1°C ALIEN</div>
+    <div class="cut full" id="cut3" style="left:-120px;top:3060px;width:1480px;height:2280px">
+      <img src="assets/scene3-anglerfish.png" alt="Bioluminescent anglerfish and jellyfish">
+    </div>
+
+    <svg class="anno" id="bioSvg" style="left:140px;top:3380px;width:820px;height:820px" viewBox="0 0 820 820">
+      <circle class="anno-draw" id="bioRing" cx="505" cy="300" r="95" fill="none" stroke="#2EE6FF" stroke-width="5" stroke-dasharray="14 12"/>
+      <path class="anno-draw" id="bioLead" d="M590 250 L680 180 L790 180" fill="none" stroke="#2EE6FF" stroke-width="5" stroke-linecap="round"/>
+    </svg>
+    <div class="tag cyan" id="tag3a" style="left:650px;top:3490px">BIOLUMINESCENCE</div>
+    <div class="tag" id="tag3b" style="left:110px;top:4520px">TEMP: 1°C · MIDNIGHT ZONE</div>
+
+    <!-- ================= ZONE 4: PLASTIC AT 11 KM (center ~2240, 5850) ================= -->
+    <div class="ghost" id="g4" style="left:1680px;top:5020px">10,927 M</div>
+    <div class="cut full" id="cut4" style="left:1540px;top:4760px;width:1420px;height:2280px">
+      <img src="assets/scene4-plastic-abyss.png" alt="Plastic bottle on deepest ocean floor">
+    </div>
+
+    <svg class="anno" id="plasticSvg" style="left:1740px;top:5480px;width:900px;height:700px" viewBox="0 0 900 700">
+      <rect class="anno-draw" id="pBox" x="150" y="210" width="560" height="310" rx="18" fill="none" stroke="#FF4638" stroke-width="6" stroke-dasharray="18 14"/>
+    </svg>
+    <div class="stamp" id="stamp4" style="left:1840px;top:5580px">MICROPLASTIC FOUND · 11 KM</div>
+    <div class="tag red" id="tag4" style="left:1730px;top:6160px">HUMAN FOOTPRINT · DEEPEST FLOOR</div>
+
+    <!-- ================= ZONE 5: 5% EXPLORED / EARTH ORBIT (center ~640, 7650) ================= -->
+    <div class="ghost" id="g5" style="left:140px;top:6780px">95%</div>
+    <div class="cut full" id="cut5" style="left:-120px;top:6560px;width:1480px;height:2280px">
+      <img src="assets/scene5-earth-ocean.png" alt="Pacific Ocean from orbit">
+    </div>
+
+    <div class="metric-box" id="mOcean" style="left:110px;top:6980px;width:860px;display:flex;align-items:center;gap:34px">
+      <svg width="190" height="190" viewBox="0 0 190 190" style="flex:none">
+        <circle cx="95" cy="95" r="76" fill="none" stroke="rgba(255,255,255,.14)" stroke-width="18"/>
+        <circle id="donut5" cx="95" cy="95" r="76" fill="none" stroke="#2EE6FF" stroke-width="18"
+          stroke-linecap="round" stroke-dasharray="477.5" stroke-dashoffset="477.5" transform="rotate(-90 95 95)"/>
+        <text x="95" y="109" text-anchor="middle" fill="#2EE6FF" font-family="Teko,sans-serif" font-size="60" font-weight="700">5%</text>
+      </svg>
+      <div>
+        <div class="metric-lbl">OCEAN FLOOR MAPPED</div>
+        <div class="world-title" style="position:static;opacity:1;font-size:66px;color:#F6F4EE">95% अब भी अनदेखा</div>
+      </div>
+    </div>
+    <div class="tag cyan" id="tag5" style="left:110px;top:8040px">SOURCE: NOAA · WOODS HOLE</div>
+  </div>
+
+  <!-- Deterministic underwater particles -->
+  <canvas id="snow" width="1080" height="1920"></canvas>
+
+  <!-- Cinematic vignette & HUD -->
+  <div class="vig"></div>
+  <div class="hud-depth">
+    <div class="hud-dot" id="hudDot"></div>
+    <div class="hud-txt" id="hudTxt">DEPTH: 0 M</div>
+  </div>
+  <div class="hud-bar"><div class="hud-fill" id="hudFill"></div></div>
+
+  <!-- Dark gradient pocket + Animated Hindi Captions -->
+  <div class="cap-pocket"></div>
+  <div id="captions"></div>
+
+  <!-- Minimal click-to-start gate shown ONLY if browser blocks autoplay with sound -->
+  <div id="gate" aria-label="Play video">
+    <div id="gate-btn">
+      <svg width="56" height="56" viewBox="0 0 56 56"><polygon points="18,11 46,28 18,45" fill="#FFD400"/></svg>
+    </div>
+  </div>
+
+  <!-- ?debug=1 scrub panel -->
+  <div id="dbg">
+    <button id="dPlay">Pause</button>
+    <input id="dScrub" type="range" min="0" max="1000" value="0">
+    <span id="dClock">0.00s</span>
+  </div>
+</div>
+
+<!-- Hindi Voiceover Clips -->
+<audio id="vo1" src="assets/vo-1.mp3" preload="auto"></audio>
+<audio id="vo2" src="assets/vo-2.mp3" preload="auto"></audio>
+<audio id="vo3" src="assets/vo-3.mp3" preload="auto"></audio>
+<audio id="vo4" src="assets/vo-4.mp3" preload="auto"></audio>
+<audio id="vo5" src="assets/vo-5.mp3" preload="auto"></audio>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const W=1080,H=1920,DUR=58.20;
+function fit(){const s=Math.min(innerWidth/W,innerHeight/H);$('#stage').style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+
+/* ---------- Directional SVG Motion Blur ---------- */
+const defs=$('#filters defs');let fc=0;
+function makeBlur(){
+  const id='mb'+(fc++),NS='http://www.w3.org/2000/svg';
+  const f=document.createElementNS(NS,'filter');f.id=id;
+  f.setAttribute('x','-60%');f.setAttribute('y','-60%');f.setAttribute('width','220%');f.setAttribute('height','220%');
+  const g=document.createElementNS(NS,'feGaussianBlur');g.setAttribute('stdDeviation','0 0');
+  f.appendChild(g);defs.appendChild(f);
+  return {url:`url(#${id})`,node:g};
+}
+function blurTween(tl,targets,at,from,to,dur,{ease='power3.out',ax=.1,ay=1}={}){
+  const b=makeBlur(),o={v:from};
+  tl.set(targets,{filter:b.url},at);
+  tl.to(o,{v:to,duration:dur,ease,onUpdate(){b.node.setAttribute('stdDeviation',`${(o.v*ax).toFixed(2)} ${(o.v*ay).toFixed(2)}`);}},at);
+  tl.set(targets,{filter:'none'},at+dur);
+}
+
+/* ---------- Deterministic Underwater Marine Snow (pure function of t) ---------- */
+const snowCtx=$('#snow').getContext('2d');
+const PARTICLES=Array.from({length:36},(_,i)=>{
+  // Deterministic PRNG seeded by index
+  const s1=Math.sin(i*12.9898)*43758.5453;const r1=s1-Math.floor(s1);
+  const s2=Math.sin(i*78.233)*43758.5453;const r2=s2-Math.floor(s2);
+  const s3=Math.sin(i*45.164)*43758.5453;const r3=s3-Math.floor(s3);
+  return {x:r1*W,y:r2*H,r:1.5+r3*3.4,vy:28+r2*54,phase:r1*6.28,amp:12+r3*22,op:.16+r1*.24};
+});
+function drawSnow(t){
+  snowCtx.clearRect(0,0,W,H);
+  for(let i=0;i<PARTICLES.length;i++){
+    const p=PARTICLES[i];
+    const px=(p.x+Math.sin(t*.8+p.phase)*p.amp+W)%W;
+    const py=((p.y-t*p.vy)%H+H)%H;
+    snowCtx.fillStyle=`rgba(168,228,255,${p.op.toFixed(2)})`;
+    snowCtx.beginPath();snowCtx.arc(px,py,p.r,0,Math.PI*2);snowCtx.fill();
+  }
+}
+
+/* ---------- Camera Rig #world ---------- */
+const rig=$('#world');
+const C={x:540,y:960,z:1.08};
+function applyCam(){
+  rig.style.transform=`translate(${(W/2-C.x*C.z).toFixed(2)}px,${(H/2-C.y*C.z).toFixed(2)}px) scale(${C.z.toFixed(4)})`;
+}
+const look=(at,x,y,z,dur=1.4,ease='sine.inOut')=>tl.to(C,{x,y,z,duration:dur,ease,onUpdate:applyCam},at);
+const into=(cutAt,x,y,z)=>tl.to(C,{x,y,z,duration:.7,ease:'power2.in',onUpdate:applyCam},cutAt-.7);
+const settle=(cutAt,x,y,z)=>tl.to(C,{x,y,z,duration:.95,ease:'power3.out',onUpdate:applyCam},cutAt);
+
+/* ---------- Master GSAP Timeline ---------- */
+const tl=gsap.timeline({paused:true});
+const show=(sel,at,from={opacity:0,y:36,scale:.96},dur=.65,ease='power3.out')=>{
+  tl.fromTo(sel,{opacity:0,...from},{opacity:1,x:0,y:0,scale:1,duration:dur,ease,immediateRender:false},at);
+};
+const hide=(sel,at,to={y:-30},dur=.3)=>{
+  tl.to(sel,{opacity:0,...to,duration:dur,ease:'power2.in'},at);
+};
+const drawClip=(sel,at,dur=.75)=>{
+  const el=$(sel);tl.set(el,{opacity:0},0);tl.set(el,{opacity:1},at);
+  const o={v:0};
+  tl.to(o,{v:1,duration:dur,ease:'power2.inOut',onUpdate(){el.style.clipPath=`inset(0 ${(1-o.v)*100}% 0 0)`;}},at);
+};
+
+/* ---------- SCENE 1: MARIANA TRENCH & EVEREST (0.00s -> 15.65s) ---------- */
+tl.set(C,{x:540,y:760,z:1.22,onUpdate:applyCam},0);
+tl.set('#cut1a',{opacity:1},0);
+tl.fromTo('#cut1a img',{scale:1.12,y:30},{scale:1.0,y:-45,duration:15.6,ease:'none'},0);
+tl.fromTo('#g1',{opacity:0,y:40},{opacity:1,y:0,duration:1.1,ease:'power2.out'},.4);
+
+// Dive camera down into the trench as Everest appears
+look(1.6,540,1000,1.04,2.8,'power2.inOut');
+show('#cut1b',2.5,{x:-120,y:80,scale:.92,rotate:-2},.95,'power4.out');
+blurTween(tl,'#cut1b',2.5,24,0,.65,{ax:1,ay:.2});
+tl.fromTo('#cut1b img',{scale:1.14},{scale:1.02,duration:12.5,ease:'none'},2.5);
+
+// Scale ruler draw
+drawClip('#rLine',4.2,.9);
+drawClip('#rWater',4.4,.4);
+drawClip('#rPeak',4.8,.5);
+drawClip('#rGap',5.1,.55);
+drawClip('#rFloor',5.5,.5);
+show('#tag1a',5.2,{x:30},.45);
+show('#tag1b',5.6,{x:30},.45);
+show('#tag1c',9.6,{y:30},.5);
+
+// Gentle dive breath until transition
+look(9.5,580,1040,1.08,5.5,'sine.inOut');
+
+/* ---------- SCENE 2: CRUSHING PRESSURE (15.65s -> 26.75s) ---------- */
+into(15.65,680,1360,1.42);
+tl.set(C,{x:2160,y:2360,z:1.22,onUpdate:applyCam},15.65);
+settle(15.65,2160,2340,1.04);
+tl.set('#cut2',{opacity:1},15.65);
+tl.fromTo('#cut2 img',{scale:1.16,x:20},{scale:1.02,x:-24,duration:11.2,ease:'none'},15.65);
+show('#g2',15.9,{y:40},.9);
+show('#mPressure',16.4,{y:-40,scale:.94},.65);
+const pObj={v:0};
+tl.to(pObj,{v:1086,duration:2.6,ease:'power2.out',onUpdate(){$('#valPressure').textContent=Math.round(pObj.v).toLocaleString('en-US')+' BAR';}},16.7);
+
+// 50 Jumbo Jets comparison
+show('#mJets',18.8,{y:50,scale:.94},.65);
+const jObj={v:0};
+tl.to(jObj,{v:50,duration:2.1,ease:'power3.out',onUpdate(){$('#valJets').textContent=Math.round(jObj.v)+'×';}},19.1);
+tl.to('#jetBar',{width:'96%',duration:2.1,ease:'power3.out'},19.1);
+
+// Focus onto submersible cockpit + sunlight warning
+look(22.2,2230,2250,1.16,3.8,'sine.inOut');
+show('#tag2',22.6,{x:40},.5);
+
+/* ---------- SCENE 3: BIOLUMINESCENCE (26.75s -> 38.35s) ---------- */
+into(26.75,2350,2480,1.38);
+tl.set(C,{x:690,y:4060,z:1.28,onUpdate:applyCam},26.75);
+settle(26.75,640,4140,1.05);
+tl.set('#cut3',{opacity:1},26.75);
+tl.fromTo('#cut3 img',{scale:1.15,y:18},{scale:1.02,y:-24,duration:11.6,ease:'none'},26.75);
+show('#g3',27.1,{y:40},.9);
+show('#tag3b',29.8,{y:30},.55);
+
+// Spotlight ring onto anglerfish glowing lure
+look(32.0,610,3980,1.16,3.5,'sine.inOut');
+drawClip('#bioRing',32.6,.65);
+drawClip('#bioLead',33.0,.5);
+show('#tag3a',33.4,{x:25},.45);
+look(35.6,640,4160,1.04,2.4,'sine.inOut');
+
+/* ---------- SCENE 4: PLASTIC AT 11 KM (38.35s -> 49.80s) ---------- */
+into(38.35,760,4400,1.34);
+tl.set(C,{x:2240,y:5820,z:1.22,onUpdate:applyCam},38.35);
+settle(38.35,2240,5860,1.04);
+tl.set('#cut4',{opacity:1},38.35);
+tl.fromTo('#cut4 img',{scale:1.14},{scale:1.03,duration:11.5,ease:'none'},38.35);
+show('#g4',38.7,{y:40},.9);
+
+// Zoom closer onto the plastic bottle & bag
+look(41.4,2200,5960,1.18,3.6,'power2.inOut');
+drawClip('#pBox',46.0,.6);
+tl.fromTo('#stamp4',{opacity:0,scale:1.8,rotate:-12},{opacity:1,scale:1,rotate:-5,duration:.45,ease:'back.out(2)',immediateRender:false},46.6);
+show('#tag4',47.1,{y:30},.45);
+
+/* ---------- SCENE 5: 5% EXPLORED / EARTH ORBIT (49.80s -> 58.20s) ---------- */
+into(49.80,2200,5640,1.42);
+tl.set(C,{x:640,y:7660,z:1.24,onUpdate:applyCam},49.80);
+settle(49.80,640,7650,1.04);
+tl.set('#cut5',{opacity:1},49.80);
+tl.fromTo('#cut5 img',{scale:1.15,y:25},{scale:1.02,y:-20,duration:8.5,ease:'none'},49.80);
+show('#g5',50.1,{y:40},.85);
+show('#mOcean',50.6,{y:-40,scale:.95},.65);
+tl.to('#donut5',{strokeDashoffset:477.5*.95,duration:1.8,ease:'power3.out'},51.2);
+show('#tag5',53.8,{y:25},.5);
+look(53.5,640,7680,1.10,4.7,'sine.inOut');
+
+/* ---------- LIVE DEPTH HUD (deterministic from timeline) ---------- */
+const depthTween={m:0,pct:0};
+tl.to(depthTween,{m:10984,pct:30,duration:15.2,ease:'power2.inOut'},.2);
+tl.to(depthTween,{m:10984,pct:62,duration:22.0,ease:'none'},15.4);
+tl.to(depthTween,{m:10927,pct:85,duration:11.0,ease:'none'},38.4);
+tl.to(depthTween,{m:0,pct:100,duration:2.5,ease:'power3.out'},50.0);
+
+/* ---------- ANIMATED WORD-BY-WORD HINDI CAPTIONS ---------- */
+// Format: [start, end, wordsArray] where each word is {t, hl?, cls?}
+const PHRASES=[
+  // Clip 1 (0.15 -> 15.32)
+  [0.15,3.55,[{t:'सोचो,'},{t:'अगर'},{t:'हम'},{t:'माउंट एवरेस्ट',hl:1},{t:'को'}]],
+  [3.55,6.90,[{t:'उठाकर'},{t:'उल्टा'},{t:'समंदर में',hl:1,cls:'cyan'},{t:'डाल दें,'}]],
+  [6.90,10.10,[{t:'तब भी'},{t:'ऊपर'},{t:'2 KM पानी',hl:1},{t:'बचा रहेगा!'}]],
+  [10.10,12.65,[{t:'जी हाँ,'},{t:'ये है'},{t:'मारियाना ट्रेंच',hl:1,cls:'cyan'}]],
+  [12.65,15.45,[{t:'धरती की'},{t:'सबसे'},{t:'गहरी और रहस्यमयी',hl:1},{t:'जगह'}]],
+
+  // Clip 2 (15.85 -> 26.36)
+  [15.85,18.80,[{t:'यहाँ'},{t:'पानी का'},{t:'दबाव',hl:1},{t:'इतना ज़्यादा है,'}]],
+  [18.80,22.90,[{t:'जैसे शरीर पर'},{t:'50 जंबो जेट',hl:1,cls:'red'},{t:'रख दिए जाएं'}]],
+  [22.90,26.50,[{t:'सूरज की'},{t:'एक किरण भी',hl:1},{t:'नहीं पहुँचती'}]],
+
+  // Clip 3 (26.95 -> 37.94)
+  [26.95,29.75,[{t:'लेकिन'},{t:'कमाल की बात'},{t:'ये है,',hl:1,cls:'cyan'}]],
+  [29.75,32.85,[{t:'इस घुप'},{t:'अंधेरे और'},{t:'बर्फीले पानी',hl:1,cls:'cyan'},{t:'में भी'}]],
+  [32.85,35.60,[{t:'ऐसे जीव'},{t:'जो'},{t:'खुद की रोशनी',hl:1,cls:'cyan'},{t:'से चमकते हैं'}]],
+  [35.60,38.10,[{t:'बिल्कुल किसी'},{t:'एलियन दुनिया',hl:1},{t:'की तरह!'}]],
+
+  // Clip 4 (38.55 -> 49.40)
+  [38.55,41.20,[{t:'और सबसे'},{t:'हैरान करने वाली',hl:1,cls:'red'},{t:'बात?'}]],
+  [41.20,44.30,[{t:'11 किलोमीटर नीचे,',hl:1},{t:'जहाँ'},{t:'इंसान भी'}]],
+  [44.30,46.75,[{t:'मुश्किल से'},{t:'पहुँचा है,',hl:1,cls:'red'}]],
+  [46.75,49.55,[{t:'वहाँ भी मिलीं'},{t:'प्लास्टिक की थैलियाँ!',hl:1,cls:'red'}]],
+
+  // Clip 5 (50.00 -> 57.13)
+  [50.00,53.75,[{t:'हमने समंदर का'},{t:'सिर्फ'},{t:'5% हिस्सा',hl:1,cls:'cyan'},{t:'ही देखा है'}]],
+  [53.75,57.50,[{t:'असली दुनिया तो'},{t:'अभी नीचे',hl:1},{t:'सो रही है!'}]],
+];
+
+const capRoot=$('#captions');
+const phraseNodes=PHRASES.map(([s,e,words])=>{
+  const div=document.createElement('div');div.className='cap-phrase';
+  const spans=words.map(w=>{
+    const sp=document.createElement('span');
+    sp.className='cw'+(w.hl?' hl':'')+(w.cls?' '+w.cls:'');
+    sp.textContent=w.t;
+    div.appendChild(sp);
+    return {el:sp,hl:!!w.hl,weight:Math.max(2,w.t.length)};
+  });
+  capRoot.appendChild(div);
+  // Phrase entrance + exit with directional vertical blur
+  tl.fromTo(div,{opacity:0,y:44,scaleY:1.18},{opacity:1,y:0,scaleY:1,duration:.34,ease:'power4.out',immediateRender:false},s);
+  blurTween(tl,div,s,18,0,.28,{ax:.08,ay:1});
+  tl.to(div,{opacity:0,y:-34,duration:.24,ease:'power2.in'},e-.22);
+  blurTween(tl,div,e-.22,0,18,.24,{ease:'power2.in',ax:.08,ay:1});
+  return {s,e,div,spans};
+});
+
+// Pure deterministic update for active caption words, HUD, and marine snow
+function renderAt(t){
+  drawSnow(t);
+  // HUD depth readout
+  $('#hudTxt').textContent=t>50.5?'ORBITAL VIEW · PACIFIC':'DEPTH: -'+Math.round(depthTween.m).toLocaleString('en-US')+' M';
+  $('#hudFill').style.width=depthTween.pct.toFixed(1)+'%';
+  $('#hudDot').style.background=t>38.35&&t<49.8?'#FF4638':(t>26.75&&t<38.35?'#2EE6FF':'#FFD400');
+
+  // Word-by-word highlight progress
+  for(let i=0;i<phraseNodes.length;i++){
+    const p=phraseNodes[i];
+    if(t<p.s-.05||t>p.e+.05)continue;
+    const totalW=p.spans.reduce((a,b)=>a+b.weight,0);
+    const prog=Math.max(0,Math.min(1,(t-p.s)/(p.e-p.s)));
+    let acc=0;
+    for(let j=0;j<p.spans.length;j++){
+      const sp=p.spans[j];
+      const wStart=acc/totalW;
+      acc+=sp.weight;
+      const wEnd=acc/totalW;
+      const active=prog>=wStart&&prog<wEnd;
+      const passed=prog>=wStart;
+      sp.el.classList.toggle('active',active);
+      sp.el.style.transform=active?'scale(1.1) translateY(-4px)':'scale(1) translateY(0)';
+      if(sp.hl){
+        const fill=passed?Math.min(1,(prog-wStart)/Math.max(.08,(wEnd-wStart)*.55)):0;
+        sp.el.style.setProperty('--p',fill.toFixed(3));
+        sp.el.classList.toggle('filled',fill>.35);
+      }
+    }
+  }
+}
+
+tl.to({},{duration:.01},DUR);
+
+/* ---------- MULTI-CLIP HINDI VOICEOVER SYNC ---------- */
+const VO_CLIPS=[
+  {el:$('#vo1'),start:0.15,end:15.32},
+  {el:$('#vo2'),start:15.85,end:26.36},
+  {el:$('#vo3'),start:26.95,end:37.94},
+  {el:$('#vo4'),start:38.55,end:49.40},
+  {el:$('#vo5'),start:50.00,end:57.13},
+];
+let audioUnlocked=false;
+
+function syncAudio(t,playing){
+  if(!audioUnlocked)return;
+  for(const c of VO_CLIPS){
+    const inside=t>=c.start&&t<=c.end;
+    if(playing&&inside){
+      const target=t-c.start;
+      if(c.el.paused){
+        try{c.el.currentTime=target;}catch(e){}
+        c.el.play().catch(()=>{});
+      }else if(Math.abs(c.el.currentTime-target)>0.16){
+        c.el.currentTime=target;
+      }
+    }else{
+      if(!c.el.paused)c.el.pause();
+    }
+  }
+}
+
+function pauseAllAudio(){
+  for(const c of VO_CLIPS){try{c.el.pause();}catch(e){}}
+}
+
+function start(){
+  pauseAllAudio();
+  for(const c of VO_CLIPS){try{c.el.currentTime=0;}catch(e){}}
+  tl.play(0);
+  syncAudio(0,true);
+}
+
+tl.eventCallback('onComplete',()=>start());
+gsap.ticker.add(()=>{
+  const t=tl.time();
+  renderAt(t);
+  syncAudio(t,!tl.paused());
+});
+
+/* ---------- CONTROLS & EXPORT HOOKS ---------- */
+const q=new URLSearchParams(location.search);
+window.OPENER={
+  W,H,DURATION:DUR,tl,ready:false,
+  seek(t){tl.pause(t,false);applyCam();renderAt(t);pauseAllAudio();},
+  play:start
+};
+
+addEventListener('keydown',e=>{
+  if(/^[rR]$/.test(e.key)){audioUnlocked=true;$('#gate').style.display='none';start();}
+  if(e.code==='Space'){
+    e.preventDefault();
+    if(tl.paused()){audioUnlocked=true;$('#gate').style.display='none';tl.play();}
+    else{tl.pause();pauseAllAudio();}
+  }
+});
+
+if(q.has('debug')){
+  const dbg=$('#dbg');dbg.style.display='flex';
+  const sc=$('#dScrub'),ck=$('#dClock');let drag=false;
+  gsap.ticker.add(()=>{
+    if(!drag)sc.value=String(tl.time()/DUR*1000);
+    ck.textContent=tl.time().toFixed(2)+'s';
+    $('#dPlay').textContent=tl.paused()?'Play':'Pause';
+  });
+  sc.addEventListener('pointerdown',()=>{drag=true;tl.pause();pauseAllAudio();});
+  addEventListener('pointerup',()=>drag=false);
+  sc.addEventListener('input',()=>{tl.pause();window.OPENER.seek(sc.value/1000*DUR);});
+  $('#dPlay').onclick=()=>{
+    if(tl.paused()){audioUnlocked=true;$('#gate').style.display='none';tl.play();}
+    else{tl.pause();pauseAllAudio();}
+  };
+}
+
+document.fonts.ready.then(()=>{
+  applyCam();renderAt(0);
+  window.OPENER.ready=true;
+  if(q.has('clean')){$('#dlBtn').style.display='none';return;}
+  // Attempt autoplay with audio immediately; if browser blocks, hold cleanly at frame 0 until first click
+  const v1=VO_CLIPS[0].el;
+  v1.play().then(()=>{
+    v1.pause();v1.currentTime=0;
+    audioUnlocked=true;
+    start();
+  }).catch(()=>{
+    const gate=$('#gate');gate.style.display='flex';
+    const unlock=()=>{
+      removeEventListener('pointerdown',unlock);
+      removeEventListener('keydown',unlock);
+      gate.style.display='none';
+      // Prime all 5 audio elements inside user gesture for seamless playback
+      VO_CLIPS.forEach(c=>{c.el.play().then(()=>c.el.pause()).catch(()=>{});});
+      audioUnlocked=true;
+      start();
+    };
+    addEventListener('pointerdown',unlock);
+    addEventListener('keydown',unlock);
+  });
+});
+</script>
+</body>
+</html>
