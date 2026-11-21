@@ -1,0 +1,9 @@
+# Render toolchain for the Hindi facts Short (no headless-browser available in this sandbox,
+# so the Bang Motion timeline is rasterised with Skia instead of Chromium screenshots).
+numpy==2.4.6
+pillow==13.0.0
+uharfbuzz==0.57.0
+imageio-ffmpeg==0.8.1
+fonttools
+brotli
+skia-python==87.7   # needs libGL stub, see tools/setup_render_env.sh
