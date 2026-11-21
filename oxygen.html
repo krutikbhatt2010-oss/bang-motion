@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>5 Seconds Without Oxygen — Bang Motion 9:16</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@500;700&family=Noto+Sans+Devanagari:wght@700;900&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<style>
+  :root { --bg:#04050a; --ink:#fff; --red:#ef4444; --amber:#facc15; --cyan:#38bdf8; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#020308; color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Plus Jakarta Sans','Noto Sans Devanagari',sans-serif; }
+  #stage { position:relative; width:1080px; height:1920px; overflow:hidden; background:var(--bg); transform-origin:center center; box-shadow:0 24px 90px rgba(0,0,0,0.85); }
+  #world { position:absolute; inset:0; width:1080px; height:11520px; will-change:transform; }
+  .plate { position:absolute; left:0; width:1080px; height:2240px; overflow:hidden; }
+  .plate img { width:100%; height:100%; object-fit:cover; display:block; }
+  .plate::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(4,5,10,0.68) 0%,rgba(4,5,10,0.08) 28%,rgba(4,5,10,0.12) 66%,rgba(4,5,10,0.9) 100%); }
+  .hook-banner { position:absolute; left:64px; right:64px; top:250px; padding:22px 28px; border-radius:20px; background:rgba(10,12,20,0.84); border:2px solid rgba(250,204,21,0.55); }
+  .hook-lbl { font-family:'IBM Plex Mono',monospace; font-size:23px; letter-spacing:3px; color:#fde047; text-transform:uppercase; }
+  .hook-val { font-family:'Anton',sans-serif; font-size:84px; line-height:1.0; color:#fff; margin-top:6px; }
+  #hud { position:absolute; top:76px; left:54px; right:54px; display:flex; align-items:center; justify-content:space-between; z-index:40; pointer-events:none; }
+  #hudPill { display:inline-flex; align-items:center; gap:12px; padding:12px 22px; border-radius:999px; background:rgba(10,12,22,0.82); border:1.5px solid rgba(255,255,255,0.18); font-family:'IBM Plex Mono',monospace; font-size:23px; letter-spacing:1.6px; }
+  #hudDot { width:14px; height:14px; border-radius:50%; background:var(--red); }
+  #timer { font-family:'Anton',sans-serif; font-size:52px; color:#facc15; text-shadow:0 4px 16px rgba(0,0,0,0.85); }
+  #captionWrap { position:absolute; left:48px; right:48px; bottom:230px; display:flex; flex-direction:column; align-items:center; gap:12px; z-index:50; pointer-events:none; text-align:center; }
+  .cap-line { display:flex; flex-wrap:wrap; justify-content:center; gap:12px 14px; }
+  .cw { position:relative; display:inline-block; padding:6px 14px; font-family:'Noto Sans Devanagari','Plus Jakarta Sans',sans-serif; font-weight:900; font-size:56px; line-height:1.15; color:#fff; text-shadow:0 4px 0 #000,0 8px 20px rgba(0,0,0,0.88); isolation:isolate; }
+  .cw.en { font-family:'Anton',sans-serif; font-size:60px; letter-spacing:1.5px; text-transform:uppercase; }
+  .cw.pill::before { content:""; position:absolute; inset:0; border-radius:14px; background:var(--pill-bg,#facc15); z-index:-1; transform:scaleX(var(--p,0)); transform-origin:left center; }
+  .cw.pill.filled { color:var(--pill-fg,#070a12); text-shadow:none; }
+  #dlBtn { position:fixed; right:20px; bottom:20px; z-index:9999; padding:12px 18px; border-radius:999px; background:linear-gradient(135deg,#ef4444,#facc15); color:#090b12; font-weight:800; font-size:14px; text-decoration:none; box-shadow:0 8px 28px rgba(239,68,68,0.45); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="world">
+    <div class="plate" id="p1" style="top:0px;"><img src="assets/ox-1-hook-sky.png"><div class="hook-banner"><div class="hook-lbl">EMERGENCY ALERT · 0% OXYGEN</div><div class="hook-val" style="color:#facc15;">5 SEC = GAME OVER</div></div></div>
+    <div class="plate" id="p2" style="top:1920px;"><img src="assets/ox-2-black-sky.png"><div class="hook-banner" style="border-color:rgba(56,189,248,0.55);"><div class="hook-lbl">#1 · NO LIGHT SCATTERING</div><div class="hook-val" style="color:#38bdf8;">PITCH BLACK SKY</div></div></div>
+    <div class="plate" id="p3" style="top:3840px;"><img src="assets/ox-3-concrete-dust.png"><div class="hook-banner" style="border-color:rgba(239,68,68,0.6);"><div class="hook-lbl">#2 · OXYGEN = CONCRETE GLUE</div><div class="hook-val" style="color:#ef4444;">CITIES TURN TO DUST</div></div></div>
+    <div class="plate" id="p4" style="top:5760px;"><img src="assets/ox-4-pressure-drop.png"><div class="hook-banner" style="border-color:rgba(250,204,21,0.6);"><div class="hook-lbl">#3 · -21% AIR PRESSURE</div><div class="hook-val" style="color:#facc15;">EARDRUMS RUPTURE</div></div></div>
+    <div class="plate" id="p5" style="top:7680px;"><img src="assets/ox-5-oceans-boil.png" style="transform:scale(1.22);"><div class="hook-banner" style="border-color:rgba(56,189,248,0.6);"><div class="hook-lbl">#4 · H2O SPLITS TO H2 GAS</div><div class="hook-val" style="color:#38bdf8;">OCEANS FLASH-BOIL</div></div></div>
+    <div class="plate" id="p6" style="top:9600px;"><img src="assets/ox-6-earth-survivor.png"><div class="hook-banner" style="border-color:rgba(239,68,68,0.65);"><div class="hook-lbl">YOUR TURN · COMMENT 1, 2 OR 3</div><div class="hook-val" style="color:#fff;">WHICH SCARES YOU?</div></div></div>
+  </div>
+  <div id="hud"><div id="hudPill"><span id="hudDot"></span><span id="hudTxt">O2 LEVEL: 0.0%</span></div><div id="timer">05.00s</div></div>
+  <div id="captionWrap"></div>
+</div>
+<audio id="vo1" src="assets/ox-vo-1.mp3" preload="auto"></audio>
+<audio id="vo2" src="assets/ox-vo-2.mp3" preload="auto"></audio>
+<audio id="vo3" src="assets/ox-vo-3.mp3" preload="auto"></audio>
+<audio id="vo4" src="assets/ox-vo-4.mp3" preload="auto"></audio>
+<audio id="vo5" src="assets/ox-vo-5.mp3" preload="auto"></audio>
+<audio id="vo6" src="assets/ox-vo-6.mp3" preload="auto"></audio>
+<a id="dlBtn" href="/download-oxygen" download="oxygen-5sec-hindi-short.mp4">⬇ Download MP4</a>
+<script>
+const params = new URLSearchParams(location.search);
+if (params.get('clean') === '1') { const b = document.getElementById('dlBtn'); if (b) b.style.display = 'none'; }
+function fitStage(){ const s = Math.min(window.innerWidth/1080, window.innerHeight/1920); document.getElementById('stage').style.transform = `scale(${s})`; }
+window.addEventListener('resize', fitStage); fitStage();
+
+const DUR = 36.50;
+const tl = gsap.timeline({ paused: true });
+const world = document.getElementById('world');
+tl.set(world, { y: 0 }, 0)
+  .to(world, { y: -1920, duration: 0.48, ease: 'power4.inOut' }, 6.18)
+  .to(world, { y: -3840, duration: 0.48, ease: 'power4.inOut' }, 12.46)
+  .to(world, { y: -5760, duration: 0.48, ease: 'power4.inOut' }, 19.38)
+  .to(world, { y: -7680, duration: 0.48, ease: 'power4.inOut' }, 25.12)
+  .to(world, { y: -9600, duration: 0.48, ease: 'power4.inOut' }, 29.28);
+
+const CAPTION_BEATS = [
+  { s: 0.05, e: 3.10, words: [{t:'आप',s:0.05},{t:'5 SECOND',en:1,pill:'#facc15',fg:'#070a12',s:0.35},{t:'सांस रोक सकते हैं,',s:1.25}] },
+  { s: 3.15, e: 6.28, words: [{t:'पर बिना',s:3.15},{t:'OXYGEN',en:1,pill:'#ef4444',fg:'#fff',s:3.75},{t:'पूरी धरती',s:4.65},{t:'खत्म!',pill:'#ef4444',fg:'#fff',s:5.35}] },
+  { s: 6.42, e: 9.40, words: [{t:'#1:',en:1,pill:'#38bdf8',fg:'#070a12',s:6.42},{t:'आसमान',s:6.95},{t:'बिल्कुल काला',pill:'#ef4444',fg:'#fff',s:7.75},{t:'हो जाएगा!',s:8.70}] },
+  { s: 9.45, e: 12.55, words: [{t:'क्योंकि रोशनी',s:9.45},{t:'बिखेरने वाली',s:10.35},{t:'हवा ही नहीं!',pill:'#38bdf8',fg:'#070a12',s:11.35}] },
+  { s: 12.70, e: 16.05, words: [{t:'#2:',en:1,pill:'#ef4444',fg:'#fff',s:12.70},{t:'सीमेंट के घर और पुल',s:13.30},{t:'रेत बनकर ढह जाएंगे!',pill:'#facc15',fg:'#070a12',s:14.70}] },
+  { s: 16.10, e: 19.47, words: [{t:'क्योंकि',s:16.10},{t:'CONCRETE',en:1,pill:'#ef4444',fg:'#fff',s:16.75},{t:'में ऑक्सीजन ही',s:17.85},{t:'गोंद है!',pill:'#facc15',fg:'#070a12',s:18.65}] },
+  { s: 19.62, e: 22.35, words: [{t:'#3:',en:1,pill:'#facc15',fg:'#070a12',s:19.62},{t:'21% PRESSURE',en:1,pill:'#ef4444',fg:'#fff',s:20.25},{t:'गिरते ही',s:21.55}] },
+  { s: 22.40, e: 25.22, words: [{t:'आपके कान के पर्दे',s:22.40},{t:'तुरंत फट जाएंगे!',pill:'#ef4444',fg:'#fff',s:23.85}] },
+  { s: 25.35, e: 29.38, words: [{t:'और सारे समंदर',s:25.35},{t:'उबलकर',pill:'#38bdf8',fg:'#070a12',s:26.55},{t:'अंतरिक्ष में उड़ जाएंगे!',pill:'#ef4444',fg:'#fff',s:27.60}] },
+  { s: 29.52, e: 32.85, words: [{t:'सबसे डरावना',s:29.52},{t:'क्या था?',pill:'#facc15',fg:'#070a12',s:30.65},{t:'1, 2 या 3?',en:1,pill:'#38bdf8',fg:'#070a12',s:31.55}] },
+  { s: 32.90, e: 36.40, words: [{t:'COMMENT करें,',en:1,pill:'#ef4444',fg:'#fff',s:32.90},{t:'और जानिए क्यों...',pill:'#facc15',fg:'#070a12',s:34.50}] }
+];
+
+let activeBeatIdx = -1;
+const capWrap = document.getElementById('captionWrap');
+function renderDeterministicFrame(t){
+  tl.time(Math.max(0, Math.min(DUR, t)), false);
+  const secLeft = Math.max(0, 5.0 - (t / DUR) * 5.0);
+  document.getElementById('timer').textContent = `0${secLeft.toFixed(2)}s`;
+  const bIdx = CAPTION_BEATS.findIndex(b => t >= b.s && t <= b.e);
+  if (bIdx !== activeBeatIdx) {
+    activeBeatIdx = bIdx; capWrap.innerHTML = '';
+    if (bIdx >= 0) {
+      const line = document.createElement('div'); line.className = 'cap-line';
+      CAPTION_BEATS[bIdx].words.forEach(w => {
+        const sp = document.createElement('span');
+        sp.className = 'cw' + (w.en ? ' en' : '') + (w.pill ? ' pill' : '');
+        sp.textContent = w.t;
+        if (w.pill) { sp.style.setProperty('--pill-bg', w.pill); sp.style.setProperty('--pill-fg', w.fg || '#070a12'); }
+        line.appendChild(sp);
+      });
+      capWrap.appendChild(line);
+    }
+  }
+  if (bIdx >= 0) {
+    const els = capWrap.querySelectorAll('.cw');
+    CAPTION_BEATS[bIdx].words.forEach((w, i) => {
+      const el = els[i]; if (!el) return;
+      const dt = t - w.s;
+      if (dt < 0) { el.style.opacity = '0.32'; el.style.transform = 'scale(0.92)'; }
+      else {
+        el.style.opacity = '1';
+        const pop = dt < 0.16 ? 1 + 0.18 * Math.sin((dt / 0.16) * Math.PI) : 1.0;
+        el.style.transform = `scale(${pop.toFixed(3)})`;
+        if (w.pill) { const p = Math.min(1, dt / 0.16); el.style.setProperty('--p', p.toFixed(3)); el.classList.toggle('filled', p >= 0.92); }
+      }
+    });
+  }
+}
+window.__setTime = renderDeterministicFrame;
+if (params.get('t') !== null) { renderDeterministicFrame(parseFloat(params.get('t')) || 0); }
+else {
+  const cues = [{id:'vo1',t:0.05},{id:'vo2',t:6.42},{id:'vo3',t:12.70},{id:'vo4',t:19.62},{id:'vo5',t:25.35},{id:'vo6',t:29.52}];
+  const fired = new Set(); let startMs = null;
+  function tick(now){
+    if (!startMs) startMs = now;
+    const t = ((now - startMs) / 1000) % DUR;
+    if (t < 0.1) fired.clear();
+    cues.forEach(c => { if (t >= c.t && !fired.has(c.id)) { fired.add(c.id); const a = document.getElementById(c.id); if (a) { a.playbackRate = 1.20; a.currentTime = 0; a.play().catch(()=>{}); } } });
+    renderDeterministicFrame(t); requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+</script>
+</body>
+</html>
