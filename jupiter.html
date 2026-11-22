@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="hi">
+<!-- Built with Bang Motion (https://github.com/bangtutorial/bang-motion) — 9:16 Cosmic Gas-Giant Edition -->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Falling Into Jupiter — अगर आप Jupiter पर गिर जाएं तो क्या होगा?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=Khand:wght@600;700&family=Noto+Sans+Devanagari:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&family=Teko:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#090508;
+  --ink:#FAF7F2;
+  --mute:#B5A9B8;
+  --amber:#FF9F1C;
+  --crimson:#FF3B30;
+  --violet:#A855F7;
+  --ice:#38BDF8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:#040205;overflow:hidden;user-select:none}
+#stage{
+  position:absolute;left:50%;top:50%;
+  width:1080px;height:1920px;overflow:hidden;
+  background:var(--bg);color:var(--ink);
+  font-family:"Noto Sans Devanagari","Plus Jakarta Sans",system-ui,sans-serif;
+}
+#world{position:absolute;inset:0;transform-origin:0 0;will-change:transform}
+#filters{position:fixed;width:0;height:0;opacity:0;pointer-events:none}
+
+.cosmos-bg{
+  position:absolute;left:-1000px;top:-1000px;width:5200px;height:10400px;
+  background:
+    radial-gradient(1200px 1000px at 1540px 1400px,rgba(255,159,28,.22),transparent 70%),
+    radial-gradient(1200px 1000px at 3160px 3200px,rgba(255,59,48,.20),transparent 70%),
+    radial-gradient(1200px 1100px at 1640px 4900px,rgba(168,85,247,.24),transparent 70%),
+    radial-gradient(1100px 1000px at 3240px 6400px,rgba(255,180,40,.22),transparent 70%),
+    radial-gradient(1400px 1200px at 1640px 8100px,rgba(56,189,248,.22),transparent 72%),
+    linear-gradient(180deg,#12070C 0%,#0B0509 35%,#07040C 70%,#04050A 100%);
+}
+.grain{
+  position:absolute;left:-1000px;top:-1000px;width:5200px;height:10400px;
+  pointer-events:none;opacity:.13;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+#dust{position:absolute;inset:0;pointer-events:none;z-index:12;mix-blend-mode:screen}
+
+.cut{
+  position:absolute;opacity:0;overflow:hidden;
+  will-change:transform,filter,opacity;
+}
+.cut img{display:block;width:100%;height:100%;object-fit:cover;transform-origin:center center;will-change:transform}
+.cut::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(9,5,8,.28) 0%,transparent 32%,transparent 60%,rgba(9,5,8,.92) 100%);
+}
+.ghost{
+  position:absolute;opacity:0;pointer-events:none;white-space:nowrap;
+  font-family:"Teko",sans-serif;font-weight:700;font-size:330px;line-height:.84;
+  letter-spacing:-.02em;color:transparent;
+  -webkit-text-stroke:3px rgba(255,159,28,.18);
+}
+.tag{
+  position:absolute;opacity:0;white-space:nowrap;
+  font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:32px;letter-spacing:.1em;
+  color:var(--ink);padding:14px 22px;
+  background:rgba(12,7,12,.84);backdrop-filter:blur(8px);
+  border-left:6px solid var(--amber);border-radius:6px;
+  box-shadow:0 14px 34px rgba(0,0,0,.55);
+}
+.tag.red{border-left-color:var(--crimson)}
+.tag.violet{border-left-color:var(--violet)}
+.tag.ice{border-left-color:var(--ice)}
+
+.stamp{
+  position:absolute;opacity:0;white-space:nowrap;
+  font-family:"Khand","Teko",sans-serif;font-weight:700;font-size:48px;letter-spacing:.06em;
+  padding:12px 26px;border:5px solid var(--crimson);border-radius:10px;
+  color:var(--crimson);background:rgba(16,5,8,.84);
+  transform:rotate(-5deg);box-shadow:0 16px 40px rgba(255,59,48,.28);
+}
+.metric-box{
+  position:absolute;opacity:0;
+  padding:22px 30px;border-radius:18px;
+  background:rgba(14,8,14,.84);
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 24px 60px rgba(0,0,0,.65);
+}
+.metric-lbl{
+  font-family:"IBM Plex Mono",monospace;font-size:30px;font-weight:600;
+  letter-spacing:.1em;color:var(--mute);margin-bottom:4px;
+}
+.metric-val{
+  font-family:"Teko",sans-serif;font-size:108px;font-weight:700;line-height:.88;
+  font-variant-numeric:tabular-nums;color:var(--amber);
+}
+.metric-val.red{color:var(--crimson)}
+.metric-val.violet{color:var(--violet)}
+.metric-val.ice{color:var(--ice)}
+
+.vig{
+  position:absolute;inset:0;pointer-events:none;z-index:15;
+  background:radial-gradient(85% 74% at 50% 48%,transparent 48%,rgba(5,2,6,.74) 100%);
+}
+.hud-depth{
+  position:absolute;left:70px;top:106px;z-index:22;
+  display:flex;align-items:center;gap:18px;
+  padding:14px 24px;border-radius:14px;
+  background:rgba(12,7,12,.80);border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 12px 32px rgba(0,0,0,.5);
+}
+.hud-dot{width:16px;height:16px;border-radius:50%;background:var(--amber);box-shadow:0 0 18px var(--amber)}
+.hud-txt{
+  font-family:"IBM Plex Mono",monospace;font-size:32px;font-weight:600;
+  letter-spacing:.08em;font-variant-numeric:tabular-nums;color:var(--ink);
+}
+.hud-bar{
+  position:absolute;right:70px;top:124px;z-index:22;
+  width:210px;height:10px;border-radius:99px;background:rgba(255,255,255,.14);overflow:hidden;
+}
+.hud-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--amber),var(--crimson),var(--violet),var(--ice));border-radius:99px}
+.cap-pocket{
+  position:absolute;left:0;right:0;bottom:0;height:680px;z-index:20;pointer-events:none;
+  background:linear-gradient(180deg,transparent 0%,rgba(6,3,7,.70) 38%,rgba(4,2,5,.95) 100%);
+}
+#captions{
+  position:absolute;left:74px;right:74px;bottom:230px;z-index:25;
+  min-height:220px;display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.cap-phrase{
+  position:absolute;left:0;right:0;text-align:center;
+  font-family:"Noto Sans Devanagari","Plus Jakarta Sans",sans-serif;
+  font-weight:800;font-size:54px;line-height:1.28;letter-spacing:-.005em;
+  color:var(--ink);
+  text-shadow:0 6px 26px rgba(0,0,0,.92),0 2px 6px rgba(0,0,0,.95);
+  opacity:0;will-change:transform,filter,opacity;
+}
+.cw{
+  display:inline-block;position:relative;margin:0 .13em;
+  padding:.03em .06em;border-radius:12px;
+  color:rgba(250,247,242,.88);transform-origin:50% 65%;will-change:transform,color;
+}
+.cw.active{color:#FFFFFF;text-shadow:0 4px 24px rgba(255,159,28,.45),0 4px 16px rgba(0,0,0,.95)}
+.cw.hl{isolation:isolate;padding:.04em .22em;color:#FFD089;transition:color .14s ease}
+.cw.hl.red{color:#FFB4AD}
+.cw.hl.violet{color:#E4C4FF}
+.cw.hl.ice{color:#A8E4FF}
+.cw.hl.filled{color:#0B0609;text-shadow:none}
+.cw.hl.red.filled,.cw.hl.violet.filled{color:#FFFFFF;text-shadow:0 2px 10px rgba(0,0,0,.45)}
+.cw.hl::before{
+  content:"";position:absolute;inset:2px -2px 0;z-index:-1;border-radius:12px;
+  background:linear-gradient(100deg,#FF7A00,var(--amber));
+  transform:scaleX(var(--p,0));transform-origin:0 50%;
+}
+.cw.hl.red::before{background:linear-gradient(100deg,#D9261C,var(--crimson))}
+.cw.hl.violet::before{background:linear-gradient(100deg,#7E22CE,var(--violet))}
+.cw.hl.ice::before{background:linear-gradient(100deg,#0284C7,var(--ice))}
+
+#gate{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;cursor:pointer;background:rgba(5,2,6,.28)}
+#gate-btn{width:150px;height:150px;border-radius:50%;background:rgba(14,8,14,.84);border:3px solid var(--amber);display:grid;place-items:center;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+#dbg{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);display:none;gap:12px;align-items:center;padding:10px 16px;border-radius:14px;background:rgba(14,8,14,.92);color:#e2dce8;font:14px system-ui;z-index:60;border:1px solid rgba(255,255,255,.15)}
+#dbg input{width:340px}#dbg span{font-variant-numeric:tabular-nums;min-width:6ch}
+#dlBtn{
+  position:fixed;top:16px;right:16px;z-index:70;
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 18px;border-radius:999px;
+  background:rgba(14,8,14,.88);color:#FF9F1C;
+  border:1.5px solid rgba(255,159,28,.6);
+  font:600 14px/1 "Plus Jakarta Sans",system-ui,sans-serif;
+  text-decoration:none;backdrop-filter:blur(8px);
+}
+</style>
+</head>
+<body>
+<a id="dlBtn" href="/download-jupiter" download="jupiter-hindi-short.mp4">⬇ Download MP4</a>
+<svg id="filters"><defs></defs></svg>
+
+<div id="stage">
+  <div id="world">
+    <div class="cosmos-bg"></div>
+    <div class="grain"></div>
+
+    <!-- ZONE 1: SPACE ENTRY / NO SOLID SURFACE -->
+    <div class="ghost" id="g1" style="left:70px;top:150px">0% LAND</div>
+    <div class="cut" id="cut1" style="left:-120px;top:-120px;width:1320px;height:2280px">
+      <img src="assets/jup-1-space.png" alt="Astronaut above Jupiter">
+    </div>
+    <div class="tag" id="tag1a" style="left:72px;top:400px">SURFACE: GAS ONLY (H₂ / He)</div>
+    <div class="tag red" id="tag1b" style="left:72px;top:1270px">GRAVITY: 2.53× EARTH</div>
+
+    <!-- ZONE 2: AMMONIA CLOUDS & 600 KM/H WINDS -->
+    <div class="ghost" id="g2" style="left:1620px;top:1480px">600 KM/H</div>
+    <div class="cut" id="cut2" style="left:1480px;top:1260px;width:1360px;height:2280px">
+      <img src="assets/jup-2-ammonia.png" alt="Falling into ammonia clouds">
+    </div>
+    <div class="metric-box" id="mWind" style="left:1690px;top:1640px;width:640px">
+      <div class="metric-lbl">HURRICANE WIND SPEED</div>
+      <div class="metric-val" id="valWind">0 KM/H</div>
+    </div>
+    <div class="tag red" id="tag2" style="left:1690px;top:2790px">TOXIC AMMONIA CLOUDS</div>
+
+    <!-- ZONE 3: SUPER-LIGHTNING & CRUSHING PRESSURE -->
+    <div class="ghost" id="g3" style="left:100px;top:3300px">1,000×</div>
+    <div class="cut" id="cut3" style="left:-120px;top:3060px;width:1480px;height:2280px">
+      <img src="assets/jup-3-pressure.png" alt="Lightning storm inside Jupiter">
+    </div>
+    <div class="metric-box" id="mBolt" style="left:100px;top:3400px;width:720px">
+      <div class="metric-lbl">SUPERBOLT POWER</div>
+      <div class="metric-val violet" id="valBolt">0× EARTH</div>
+    </div>
+    <div class="stamp" id="stamp3" style="left:170px;top:4440px">PRESSURE CRITICAL · SUIT CRUSHED</div>
+
+    <!-- ZONE 4: LIQUID METALLIC HYDROGEN -->
+    <div class="ghost" id="g4" style="left:1680px;top:5020px">24,000°C</div>
+    <div class="cut" id="cut4" style="left:1540px;top:4760px;width:1420px;height:2280px">
+      <img src="assets/jup-4-liquid-metal.png" alt="Liquid metallic hydrogen ocean">
+    </div>
+    <div class="metric-box" id="mHeat" style="left:1690px;top:5130px;width:900px">
+      <div class="metric-lbl">CORE TEMPERATURE COMPARISON</div>
+      <div style="display:flex;align-items:baseline;gap:22px;margin-top:8px">
+        <div class="metric-val" id="valHeat">0°C</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:30px;color:#FF9F1C">VS SUN: 5,500°C</div>
+      </div>
+      <div style="margin-top:14px;height:18px;border-radius:99px;background:rgba(255,255,255,.12);overflow:hidden">
+        <div id="heatBar" style="height:100%;width:0%;background:linear-gradient(90deg,#FF9F1C,#FF3B30);border-radius:99px"></div>
+      </div>
+    </div>
+    <div class="tag" id="tag4" style="left:1690px;top:6160px">LIQUID METALLIC HYDROGEN</div>
+
+    <!-- ZONE 5: DIAMOND RAIN -->
+    <div class="ghost" id="g5" style="left:110px;top:6780px">DIAMONDS</div>
+    <div class="cut" id="cut5" style="left:-120px;top:6560px;width:1480px;height:2280px">
+      <img src="assets/jup-5-diamond-rain.png" alt="Diamond rain inside Jupiter">
+    </div>
+    <div class="tag ice" id="tag5a" style="left:110px;top:7010px">PRESSURE CARBON → REAL DIAMONDS</div>
+    <div class="tag" id="tag5b" style="left:110px;top:8040px">SOURCE: NASA JUNO · CALTECH</div>
+  </div>
+
+  <canvas id="dust" width="1080" height="1920"></canvas>
+  <div class="vig"></div>
+  <div class="hud-depth">
+    <div class="hud-dot" id="hudDot"></div>
+    <div class="hud-txt" id="hudTxt">ALTITUDE: +1,000 KM</div>
+  </div>
+  <div class="hud-bar"><div class="hud-fill" id="hudFill"></div></div>
+  <div class="cap-pocket"></div>
+  <div id="captions"></div>
+  <div id="gate"><div id="gate-btn"><svg width="56" height="56" viewBox="0 0 56 56"><polygon points="18,11 46,28 18,45" fill="#FF9F1C"/></svg></div></div>
+  <div id="dbg"><button id="dPlay">Pause</button><input id="dScrub" type="range" min="0" max="1000" value="0"><span id="dClock">0.00s</span></div>
+</div>
+
+<audio id="vo1" src="assets/jup-vo-1.mp3" preload="auto"></audio>
+<audio id="vo2" src="assets/jup-vo-2.mp3" preload="auto"></audio>
+<audio id="vo3" src="assets/jup-vo-3.mp3" preload="auto"></audio>
+<audio id="vo4" src="assets/jup-vo-4.mp3" preload="auto"></audio>
+<audio id="vo5" src="assets/jup-vo-5.mp3" preload="auto"></audio>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const W=1080,H=1920,DUR=57.10;
+function fit(){const s=Math.min(innerWidth/W,innerHeight/H);$('#stage').style.transform=`translate(-50%,-50%) scale(${s})`;}
+addEventListener('resize',fit);fit();
+
+const defs=$('#filters defs');let fc=0;
+function makeBlur(){
+  const id='mb'+(fc++),NS='http://www.w3.org/2000/svg';
+  const f=document.createElementNS(NS,'filter');f.id=id;
+  f.setAttribute('x','-60%');f.setAttribute('y','-60%');f.setAttribute('width','220%');f.setAttribute('height','220%');
+  const g=document.createElementNS(NS,'feGaussianBlur');g.setAttribute('stdDeviation','0 0');
+  f.appendChild(g);defs.appendChild(f);return {url:`url(#${id})`,node:g};
+}
+function blurTween(tl,targets,at,from,to,dur,{ease='power3.out',ax=.1,ay=1}={}){
+  const b=makeBlur(),o={v:from};tl.set(targets,{filter:b.url},at);
+  tl.to(o,{v:to,duration:dur,ease,onUpdate(){b.node.setAttribute('stdDeviation',`${(o.v*ax).toFixed(2)} ${(o.v*ay).toFixed(2)}`);}},at);
+  tl.set(targets,{filter:'none'},at+dur);
+}
+
+const dustCtx=$('#dust').getContext('2d');
+const PARTICLES=Array.from({length:38},(_,i)=>{
+  const s1=Math.sin(i*17.13)*43758.5453;const r1=s1-Math.floor(s1);
+  const s2=Math.sin(i*63.91)*43758.5453;const r2=s2-Math.floor(s2);
+  const s3=Math.sin(i*31.41)*43758.5453;const r3=s3-Math.floor(s3);
+  return {x:r1*W,y:r2*H,r:1.5+r3*3.2,vy:45+r2*85,phase:r1*6.28,amp:10+r3*18,op:.16+r1*.24};
+});
+function drawDust(t){
+  dustCtx.clearRect(0,0,W,H);
+  const c=t>46.2?'160,230,255':(t>22.2&&t<34.2?'216,180,255':'255,205,130');
+  for(let i=0;i<PARTICLES.length;i++){
+    const p=PARTICLES[i];
+    const px=(p.x+Math.sin(t*.9+p.phase)*p.amp+W)%W;
+    const py=((p.y+t*p.vy)%H+H)%H; // falling downward like gravity pull
+    dustCtx.fillStyle=`rgba(${c},${p.op.toFixed(2)})`;
+    dustCtx.beginPath();dustCtx.arc(px,py,p.r,0,Math.PI*2);dustCtx.fill();
+  }
+}
+
+const rig=$('#world');
+const C={x:540,y:960,z:1.06};
+function applyCam(){rig.style.transform=`translate(${(W/2-C.x*C.z).toFixed(2)}px,${(H/2-C.y*C.z).toFixed(2)}px) scale(${C.z.toFixed(4)})`;}
+const look=(at,x,y,z,dur=1.4,ease='sine.inOut')=>tl.to(C,{x,y,z,duration:dur,ease,onUpdate:applyCam},at);
+const into=(cutAt,x,y,z)=>tl.to(C,{x,y,z,duration:.65,ease:'power2.in',onUpdate:applyCam},cutAt-.65);
+const settle=(cutAt,x,y,z)=>tl.to(C,{x,y,z,duration:.95,ease:'power3.out',onUpdate:applyCam},cutAt);
+
+const tl=gsap.timeline({paused:true});
+const show=(sel,at,from={opacity:0,y:36,scale:.96},dur=.65,ease='power3.out')=>tl.fromTo(sel,{opacity:0,...from},{opacity:1,x:0,y:0,scale:1,duration:dur,ease,immediateRender:false},at);
+
+/* SCENE 1: NO SOLID SURFACE (0.00 -> 11.45) */
+tl.set(C,{x:540,y:860,z:1.18,onUpdate:applyCam},0);
+tl.set('#cut1',{opacity:1},0);
+tl.fromTo('#cut1 img',{scale:1.14,y:24},{scale:1.01,y:-36,duration:11.4,ease:'none'},0);
+show('#g1',.3,{y:40},.9);
+look(1.4,540,980,1.04,3.5,'power2.inOut');
+show('#tag1a',3.0,{x:-30},.45);
+show('#tag1b',6.8,{y:30},.45);
+look(6.5,540,1040,1.10,4.5,'sine.inOut');
+
+/* SCENE 2: AMMONIA CLOUDS & 600 KM/H (11.45 -> 22.20) */
+into(11.45,540,1180,1.38);
+tl.set(C,{x:2160,y:2360,z:1.22,onUpdate:applyCam},11.45);
+settle(11.45,2160,2340,1.04);
+tl.set('#cut2',{opacity:1},11.45);
+tl.fromTo('#cut2 img',{scale:1.18,y:-30},{scale:1.02,y:35,duration:10.8,ease:'none'},11.45);
+show('#g2',11.7,{y:40},.85);
+show('#mWind',12.4,{y:-40},.6);
+const wObj={v:0};
+tl.to(wObj,{v:600,duration:2.6,ease:'power2.out',onUpdate(){$('#valWind').textContent=Math.round(wObj.v)+' KM/H';}},12.7);
+show('#tag2',16.2,{y:30},.5);
+look(16.0,2160,2420,1.12,5.6,'sine.inOut');
+
+/* SCENE 3: LIGHTNING & CRUSHING PRESSURE (22.20 -> 34.25) */
+into(22.20,2240,2540,1.38);
+tl.set(C,{x:640,y:4100,z:1.22,onUpdate:applyCam},22.20);
+settle(22.20,640,4140,1.04);
+tl.set('#cut3',{opacity:1},22.20);
+tl.fromTo('#cut3 img',{scale:1.15},{scale:1.02,duration:12.1,ease:'none'},22.20);
+show('#g3',22.5,{y:40},.85);
+show('#mBolt',23.0,{y:-40},.6);
+const bObj={v:0};
+tl.to(bObj,{v:1000,duration:2.2,ease:'power3.out',onUpdate(){$('#valBolt').textContent=Math.round(bObj.v).toLocaleString('en-US')+'× EARTH';}},23.3);
+look(27.0,640,4220,1.16,4.0,'power2.inOut');
+tl.fromTo('#stamp3',{opacity:0,scale:1.7,rotate:-12},{opacity:1,scale:1,rotate:-5,duration:.45,ease:'back.out(2)',immediateRender:false},29.6);
+
+/* SCENE 4: LIQUID METALLIC HYDROGEN (34.25 -> 46.25) */
+into(34.25,640,4320,1.38);
+tl.set(C,{x:2240,y:5840,z:1.22,onUpdate:applyCam},34.25);
+settle(34.25,2240,5860,1.04);
+tl.set('#cut4',{opacity:1},34.25);
+tl.fromTo('#cut4 img',{scale:1.16,x:24},{scale:1.02,x:-24,duration:12.0,ease:'none'},34.25);
+show('#g4',34.5,{y:40},.85);
+show('#mHeat',35.2,{y:-40},.65);
+const hObj={v:0};
+tl.to(hObj,{v:24000,duration:2.8,ease:'power2.out',onUpdate(){$('#valHeat').textContent=Math.round(hObj.v).toLocaleString('en-US')+'°C';}},35.6);
+tl.to('#heatBar',{width:'96%',duration:2.8,ease:'power2.out'},35.6);
+show('#tag4',40.2,{y:30},.5);
+look(40.0,2240,5900,1.12,5.6,'sine.inOut');
+
+/* SCENE 5: DIAMOND RAIN (46.25 -> 57.10) */
+into(46.25,2240,5720,1.38);
+tl.set(C,{x:640,y:7660,z:1.24,onUpdate:applyCam},46.25);
+settle(46.25,640,7650,1.04);
+tl.set('#cut5',{opacity:1},46.25);
+tl.fromTo('#cut5 img',{scale:1.15,y:-24},{scale:1.02,y:26,duration:10.8,ease:'none'},46.25);
+show('#g5',46.5,{y:40},.85);
+show('#tag5a',47.8,{x:-30},.5);
+show('#tag5b',51.6,{y:25},.5);
+look(50.5,640,7680,1.12,6.2,'sine.inOut');
+
+const PHRASES=[
+  [0.15,3.20,[{t:'सोचो,'},{t:'अगर आप'},{t:'गलती से'},{t:'Jupiter पर',hl:1},{t:'गिर जाएं,'}]],
+  [3.20,5.60,[{t:'तो'},{t:'क्या होगा?',hl:1,cls:'red'}]],
+  [5.60,8.35,[{t:'सबसे पहले,'},{t:'आप किसी'},{t:'ज़मीन पर',hl:1},{t:'नहीं उतरेंगे'}]],
+  [8.35,11.15,[{t:'क्योंकि Jupiter पर'},{t:'कोई ज़मीन',hl:1,cls:'red'},{t:'है ही नहीं!'}]],
+
+  [11.75,14.80,[{t:'आप बस'},{t:'नीचे गिरते जाएंगे,',hl:1},{t:'और कुछ ही सेकंड में'}]],
+  [14.80,18.20,[{t:'ज़हरीले'},{t:'अमोनिया बादलों',hl:1,cls:'red'},{t:'और'},{t:'600 KM/H',hl:1}]],
+  [18.20,21.90,[{t:'की रफ़्तार वाले'},{t:'तूफानों में',hl:1,cls:'red'},{t:'फंस जाएंगे'}]],
+
+  [22.50,26.10,[{t:'यहाँ की बिजली'},{t:'धरती से'},{t:'हज़ार गुना',hl:1,cls:'violet'},{t:'ताकतवर है'}]],
+  [26.10,29.90,[{t:'जैसे-जैसे नीचे जाएंगे,'},{t:'दबाव इतना',hl:1,cls:'red'},{t:'बढ़ेगा कि'}]],
+  [29.90,33.97,[{t:'आपका सूट'},{t:'एक सेकंड में',hl:1,cls:'red'},{t:'चपटा हो जाएगा!'}]],
+
+  [34.55,38.40,[{t:'गहराई में'},{t:'गैस इतनी दब जाती है',hl:1},{t:'कि वो'}]],
+  [38.40,42.30,[{t:'पिघले हुए धातु के'},{t:'समंदर में',hl:1,cls:'ice'},{t:'बदल जाती है'}]],
+  [42.30,45.95,[{t:'जहाँ तापमान'},{t:'सूरज की सतह से भी',hl:1,cls:'red'},{t:'ज़्यादा है!'}]],
+
+  [46.55,49.40,[{t:'लेकिन सबसे'},{t:'पागल कर देने वाली',hl:1,cls:'ice'},{t:'बात?'}]],
+  [49.40,53.20,[{t:'इन बादलों के नीचे'},{t:'असली हीरों की',hl:1,cls:'ice'},{t:'बारिश होती है!'}]],
+  [53.20,56.50,[{t:'क्या आप'},{t:'वहाँ जाना चाहेंगे?',hl:1}]],
+];
+
+const capRoot=$('#captions');
+const phraseNodes=PHRASES.map(([s,e,words])=>{
+  const div=document.createElement('div');div.className='cap-phrase';
+  const spans=words.map(w=>{
+    const sp=document.createElement('span');
+    sp.className='cw'+(w.hl?' hl':'')+(w.cls?' '+w.cls:'');
+    sp.textContent=w.t;div.appendChild(sp);
+    return {el:sp,hl:!!w.hl,weight:Math.max(2,w.t.length)};
+  });
+  capRoot.appendChild(div);
+  tl.fromTo(div,{opacity:0,y:44,scaleY:1.18},{opacity:1,y:0,scaleY:1,duration:.34,ease:'power4.out',immediateRender:false},s);
+  blurTween(tl,div,s,18,0,.28,{ax:.08,ay:1});
+  tl.to(div,{opacity:0,y:-34,duration:.24,ease:'power2.in'},e-.22);
+  blurTween(tl,div,e-.22,0,18,.24,{ease:'power2.in',ax:.08,ay:1});
+  return {s,e,div,spans};
+});
+
+function renderAt(t){
+  drawDust(t);
+  let lbl='ALTITUDE: +1,000 KM',dot='#FF9F1C';
+  if(t>=11.45&&t<22.20){lbl='DEPTH: -250 KM · CLOUDS';dot='#FF9F1C';}
+  else if(t>=22.20&&t<34.25){lbl='DEPTH: -2,400 KM · STORM';dot='#A855F7';}
+  else if(t>=34.25&&t<46.25){lbl='DEPTH: -20,000 KM · CORE';dot='#FF3B30';}
+  else if(t>=46.25){lbl='PRESSURE: DIAMOND LAYER';dot='#38BDF8';}
+  $('#hudTxt').textContent=lbl;
+  $('#hudDot').style.background=dot;
+  $('#hudFill').style.width=(Math.min(100,t/DUR*100)).toFixed(1)+'%';
+
+  for(const p of phraseNodes){
+    if(t<p.s-.05||t>p.e+.05)continue;
+    const totalW=p.spans.reduce((a,b)=>a+b.weight,0);
+    const prog=Math.max(0,Math.min(1,(t-p.s)/(p.e-p.s)));
+    let acc=0;
+    for(const sp of p.spans){
+      const wStart=acc/totalW;acc+=sp.weight;const wEnd=acc/totalW;
+      const active=prog>=wStart&&prog<wEnd,passed=prog>=wStart;
+      sp.el.classList.toggle('active',active);
+      sp.el.style.transform=active?'scale(1.1) translateY(-4px)':'scale(1) translateY(0)';
+      if(sp.hl){
+        const fill=passed?Math.min(1,(prog-wStart)/Math.max(.08,(wEnd-wStart)*.55)):0;
+        sp.el.style.setProperty('--p',fill.toFixed(3));
+        sp.el.classList.toggle('filled',fill>.35);
+      }
+    }
+  }
+}
+tl.to({},{duration:.01},DUR);
+
+const VO_CLIPS=[
+  {el:$('#vo1'),start:0.15,end:11.15},
+  {el:$('#vo2'),start:11.75,end:21.90},
+  {el:$('#vo3'),start:22.50,end:33.97},
+  {el:$('#vo4'),start:34.55,end:45.95},
+  {el:$('#vo5'),start:46.55,end:56.15},
+];
+let audioUnlocked=false;
+function syncAudio(t,playing){
+  if(!audioUnlocked)return;
+  for(const c of VO_CLIPS){
+    const inside=t>=c.start&&t<=c.end;
+    if(playing&&inside){
+      const target=t-c.start;
+      if(c.el.paused){try{c.el.currentTime=target;}catch(e){}c.el.play().catch(()=>{});}
+      else if(Math.abs(c.el.currentTime-target)>0.16){c.el.currentTime=target;}
+    }else{if(!c.el.paused)c.el.pause();}
+  }
+}
+function pauseAllAudio(){for(const c of VO_CLIPS){try{c.el.pause();}catch(e){}}}
+function start(){pauseAllAudio();for(const c of VO_CLIPS){try{c.el.currentTime=0;}catch(e){}}tl.play(0);syncAudio(0,true);}
+tl.eventCallback('onComplete',()=>start());
+gsap.ticker.add(()=>{const t=tl.time();renderAt(t);syncAudio(t,!tl.paused());});
+
+const q=new URLSearchParams(location.search);
+window.OPENER={W,H,DURATION:DUR,tl,ready:false,seek(t){tl.pause(t,false);applyCam();renderAt(t);pauseAllAudio();},play:start};
+addEventListener('keydown',e=>{
+  if(/^[rR]$/.test(e.key)){audioUnlocked=true;$('#gate').style.display='none';start();}
+  if(e.code==='Space'){e.preventDefault();if(tl.paused()){audioUnlocked=true;$('#gate').style.display='none';tl.play();}else{tl.pause();pauseAllAudio();}}
+});
+if(q.has('debug')){
+  const dbg=$('#dbg');dbg.style.display='flex';const sc=$('#dScrub'),ck=$('#dClock');let drag=false;
+  gsap.ticker.add(()=>{if(!drag)sc.value=String(tl.time()/DUR*1000);ck.textContent=tl.time().toFixed(2)+'s';$('#dPlay').textContent=tl.paused()?'Play':'Pause';});
+  sc.addEventListener('pointerdown',()=>{drag=true;tl.pause();pauseAllAudio();});addEventListener('pointerup',()=>drag=false);
+  sc.addEventListener('input',()=>{tl.pause();window.OPENER.seek(sc.value/1000*DUR);});
+  $('#dPlay').onclick=()=>{if(tl.paused()){audioUnlocked=true;$('#gate').style.display='none';tl.play();}else{tl.pause();pauseAllAudio();}};
+}
+document.fonts.ready.then(()=>{
+  applyCam();renderAt(0);window.OPENER.ready=true;
+  if(q.has('clean')){$('#dlBtn').style.display='none';return;}
+  const v1=VO_CLIPS[0].el;
+  v1.play().then(()=>{v1.pause();v1.currentTime=0;audioUnlocked=true;start();}).catch(()=>{
+    const gate=$('#gate');gate.style.display='flex';
+    const unlock=()=>{removeEventListener('pointerdown',unlock);removeEventListener('keydown',unlock);gate.style.display='none';
+      VO_CLIPS.forEach(c=>{c.el.play().then(()=>c.el.pause()).catch(()=>{});});audioUnlocked=true;start();};
+    addEventListener('pointerdown',unlock);addEventListener('keydown',unlock);
+  });
+});
+</script>
+</body>
+</html>

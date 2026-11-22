@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Black Hole में गिर गए तो क्या होगा? — Bang Motion 9:16</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Mono:wght@500;700&family=Khand:wght@700&family=Noto+Sans+Devanagari:wght@600;800;900&family=Plus+Jakarta+Sans:wght@600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<style>
+  :root {
+    --bg: #03040a;
+    --ink: #f8fafc;
+    --gold: #fbbf24;
+    --cyan: #38bdf8;
+    --crimson: #ef4444;
+    --violet: #a855f7;
+    --muted: rgba(248, 250, 252, 0.72);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%; overflow: hidden;
+    background: #020307; color: var(--ink);
+    font-family: 'Plus Jakarta Sans', 'Noto Sans Devanagari', sans-serif;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #stage {
+    position: relative; width: 1080px; height: 1920px; overflow: hidden;
+    background: var(--bg);
+    box-shadow: 0 24px 90px rgba(0,0,0,0.85);
+    transform-origin: center center;
+  }
+  #world {
+    position: absolute; inset: 0; width: 1080px; height: 9600px;
+    will-change: transform;
+  }
+  .plate {
+    position: absolute; left: 0; width: 1080px; height: 2240px;
+    overflow: hidden;
+  }
+  .plate img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    filter: contrast(1.06) saturate(1.1);
+  }
+  .plate::after {
+    content: ""; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(3,4,10,0.72) 0%, rgba(3,4,10,0.06) 28%, rgba(3,4,10,0.10) 68%, rgba(3,4,10,0.88) 100%);
+  }
+
+  /* Directional Blur Filter Helper */
+  .mblur { filter: url(#dirBlur); }
+
+  /* Ghost Typography */
+  .ghost {
+    position: absolute; left: 56px; right: 56px;
+    font-family: 'Anton', sans-serif; font-size: 164px; line-height: 0.9;
+    letter-spacing: 2px; color: rgba(251, 191, 36, 0.14);
+    text-transform: uppercase; pointer-events: none;
+  }
+
+  /* Metric Cards */
+  .mcard {
+    position: absolute; left: 64px; right: 64px;
+    background: rgba(8, 11, 22, 0.80);
+    border: 1.5px solid rgba(255, 255, 255, 0.14);
+    border-radius: 22px; padding: 26px 32px;
+    backdrop-filter: blur(12px);
+  }
+  .mcard .lbl {
+    font-family: 'IBM Plex Mono', monospace; font-size: 23px;
+    letter-spacing: 3px; color: var(--muted); text-transform: uppercase;
+  }
+  .mcard .val {
+    font-family: 'Anton', sans-serif; font-size: 86px; line-height: 1.02;
+    margin-top: 6px; letter-spacing: 1px;
+  }
+  .bar-track {
+    margin-top: 14px; width: 100%; height: 12px; border-radius: 8px;
+    background: rgba(255,255,255,0.12); overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; width: 0%; border-radius: 8px;
+  }
+
+  /* Warning Stamp */
+  .stamp {
+    position: absolute; left: 50%; transform: translateX(-50%) rotate(-3deg);
+    padding: 14px 34px; border-radius: 14px;
+    background: rgba(239, 68, 68, 0.92); color: #fff;
+    border: 3px solid #fecaca;
+    font-family: 'IBM Plex Mono', monospace; font-weight: 700;
+    font-size: 28px; letter-spacing: 2.5px; text-transform: uppercase;
+    box-shadow: 0 12px 35px rgba(239,68,68,0.45);
+  }
+
+  /* HUD Chrome */
+  #hud {
+    position: absolute; top: 82px; left: 56px; right: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    pointer-events: none; z-index: 40;
+  }
+  #hudPill {
+    display: inline-flex; align-items: center; gap: 14px;
+    padding: 13px 24px; border-radius: 999px;
+    background: rgba(7, 10, 20, 0.80);
+    border: 1.5px solid rgba(255, 255, 255, 0.16);
+    font-family: 'IBM Plex Mono', monospace; font-size: 24px;
+    letter-spacing: 1.8px; color: #f8fafc;
+  }
+  #hudDot {
+    width: 14px; height: 14px; border-radius: 50%; background: var(--gold);
+    box-shadow: 0 0 12px var(--gold);
+  }
+  #hudTrack {
+    width: 210px; height: 10px; border-radius: 999px;
+    background: rgba(255,255,255,0.14); overflow: hidden;
+  }
+  #hudFill {
+    width: 0%; height: 100%; background: var(--gold); border-radius: 999px;
+  }
+
+  /* Hormozi + Neon Kinetic Captions */
+  #captionWrap {
+    position: absolute; left: 52px; right: 52px; bottom: 210px;
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+    z-index: 50; pointer-events: none; text-align: center;
+  }
+  .cap-line {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 14px 16px;
+  }
+  .cw {
+    position: relative; display: inline-block; padding: 6px 14px;
+    font-family: 'Noto Sans Devanagari', 'Plus Jakarta Sans', sans-serif;
+    font-weight: 900; font-size: 56px; line-height: 1.18;
+    color: #ffffff;
+    text-shadow: 0 4px 0 #000, 0 8px 22px rgba(0,0,0,0.85);
+    isolation: isolate;
+    transform-origin: center center;
+  }
+  .cw.en {
+    font-family: 'Anton', 'Plus Jakarta Sans', sans-serif;
+    font-size: 58px; letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .cw.pill::before {
+    content: ""; position: absolute; inset: 0; border-radius: 14px;
+    background: var(--pill-bg, var(--gold)); z-index: -1;
+    transform: scaleX(var(--p, 0)); transform-origin: left center;
+  }
+  .cw.pill.filled {
+    color: var(--pill-fg, #070a12);
+    text-shadow: none;
+  }
+
+  /* Floating Download Button (hidden on ?clean=1) */
+  #dlBtn {
+    position: fixed; right: 20px; bottom: 20px; z-index: 9999;
+    padding: 12px 18px; border-radius: 999px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: #090b12; font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800; font-size: 14px; text-decoration: none;
+    box-shadow: 0 8px 28px rgba(251, 191, 36, 0.45);
+  }
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <filter id="dirBlur"><feGaussianBlur id="blurAmt" stdDeviation="0 0" /></filter>
+    </defs>
+  </svg>
+
+  <div id="stage">
+    <div id="world">
+      <!-- Plate 1: Event Horizon -->
+      <div class="plate" id="p1" style="top:0px;">
+        <img src="assets/bh-1-horizon.png" alt="Black Hole Event Horizon">
+        <div class="ghost" id="g1" style="top:210px;">0% ESCAPE</div>
+        <div class="mcard" id="c1" style="top:360px; border-color: rgba(251,191,36,0.38);">
+          <div class="lbl">EVENT HORIZON · ESCAPE VELOCITY</div>
+          <div class="val" style="color:var(--gold);">> LIGHT SPEED</div>
+          <div class="bar-track"><div class="bar-fill" id="b1" style="background:linear-gradient(90deg,#fbbf24,#f97316);"></div></div>
+        </div>
+      </div>
+
+      <!-- Plate 2: Time Dilation -->
+      <div class="plate" id="p2" style="top:1920px;">
+        <img src="assets/bh-2-time-dilation.png" alt="Gravitational Time Dilation">
+        <div class="ghost" id="g2" style="top:210px; color:rgba(56,189,248,0.16);">1 SEC = 100 YR</div>
+        <div class="mcard" id="c2" style="top:360px; border-color: rgba(56,189,248,0.42);">
+          <div class="lbl">GRAVITATIONAL TIME DILATION</div>
+          <div class="val" style="color:var(--cyan);">100x SLOWER</div>
+          <div class="bar-track"><div class="bar-fill" id="b2" style="background:linear-gradient(90deg,#38bdf8,#6366f1);"></div></div>
+        </div>
+      </div>
+
+      <!-- Plate 3: Spaghettification -->
+      <div class="plate" id="p3" style="top:3840px;">
+        <img src="assets/bh-3-spaghetti.png" alt="Spaghettification Tidal Force">
+        <div class="ghost" id="g3" style="top:210px; color:rgba(239,68,68,0.18);">STRETCHED</div>
+        <div class="mcard" id="c3" style="top:360px; border-color: rgba(239,68,68,0.48);">
+          <div class="lbl">TIDAL GRAVITY GRADIENT</div>
+          <div class="val" style="color:var(--crimson);">SPAGHETTIFICATION</div>
+          <div class="bar-track"><div class="bar-fill" id="b3" style="background:linear-gradient(90deg,#ef4444,#a855f7);"></div></div>
+        </div>
+        <div class="stamp" id="st3" style="top:1160px;">TIDAL FORCE: 1,000,000 G</div>
+      </div>
+
+      <!-- Plate 4: Photon Sphere -->
+      <div class="plate" id="p4" style="top:5760px;">
+        <img src="assets/bh-4-photon-sphere.png" alt="Photon Sphere Trapped Light">
+        <div class="ghost" id="g4" style="top:210px; color:rgba(168,85,247,0.18);">LIGHT TRAP</div>
+        <div class="mcard" id="c4" style="top:360px; border-color: rgba(168,85,247,0.48);">
+          <div class="lbl">PHOTON SPHERE · TRAPPED ORBIT</div>
+          <div class="val" style="color:var(--violet);">299,792 KM/S</div>
+          <div class="bar-track"><div class="bar-fill" id="b4" style="background:linear-gradient(90deg,#38bdf8,#a855f7);"></div></div>
+        </div>
+      </div>
+
+      <!-- Plate 5: Singularity -->
+      <div class="plate" id="p5" style="top:7680px;">
+        <img src="assets/bh-5-singularity.png" alt="Singularity Infinite Density" style="transform:scale(1.22);">
+        <div class="ghost" id="g5" style="top:210px; color:rgba(251,191,36,0.18);">SINGULARITY</div>
+        <div class="mcard" id="c5" style="top:360px; border-color: rgba(251,191,36,0.46);">
+          <div class="lbl">SPACE-TIME CURVATURE</div>
+          <div class="val" style="color:#fff;">∞ DENSITY CORE</div>
+          <div class="bar-track"><div class="bar-fill" id="b5" style="background:linear-gradient(90deg,#fbbf24,#38bdf8);"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud">
+      <div id="hudPill"><span id="hudDot"></span><span id="hudTxt">PHASE 01 · EVENT HORIZON</span></div>
+      <div id="hudTrack"><div id="hudFill"></div></div>
+    </div>
+
+    <!-- Kinetic Captions -->
+    <div id="captionWrap"></div>
+  </div>
+
+  <!-- Synced Hindi VO Audio Clips (1.08x playbackRate) -->
+  <audio id="vo1" src="assets/bh-vo-1.mp3" preload="auto"></audio>
+  <audio id="vo2" src="assets/bh-vo-2.mp3" preload="auto"></audio>
+  <audio id="vo3" src="assets/bh-vo-3.mp3" preload="auto"></audio>
+  <audio id="vo4" src="assets/bh-vo-4.mp3" preload="auto"></audio>
+  <audio id="vo5" src="assets/bh-vo-5.mp3" preload="auto"></audio>
+
+  <a id="dlBtn" href="/download-blackhole" download="black-hole-hindi-short.mp4">⬇ Download MP4</a>
+
+<script>
+const params = new URLSearchParams(location.search);
+if (params.get('clean') === '1') {
+  const b = document.getElementById('dlBtn');
+  if (b) b.style.display = 'none';
+}
+
+function fitStage() {
+  const st = document.getElementById('stage');
+  const s = Math.min(window.innerWidth / 1080, window.innerHeight / 1920);
+  st.style.transform = `scale(${s})`;
+}
+window.addEventListener('resize', fitStage);
+fitStage();
+
+const DUR = 59.50;
+const HUD_PHASES = [
+  { t: 0.0,  txt: 'PHASE 01 · EVENT HORIZON',  col: '#fbbf24' },
+  { t: 13.0, txt: 'PHASE 02 · TIME DILATION',  col: '#38bdf8' },
+  { t: 24.8, txt: 'PHASE 03 · SPAGHETTI ZONE', col: '#ef4444' },
+  { t: 37.4, txt: 'PHASE 04 · PHOTON SPHERE',  col: '#a855f7' },
+  { t: 49.0, txt: 'PHASE 05 · SINGULARITY',    col: '#fbbf24' }
+];
+
+const CAPTION_BEATS = [
+  // Clip 1 (0.15 .. 12.85)
+  { s: 0.15, e: 2.80, words: [
+    { t: 'सोचिए', s: 0.15 }, { t: 'अगर आप', s: 0.65 }, { t: 'गलती से', s: 1.25 }, { t: 'BLACK HOLE', en: 1, pill: '#fbbf24', fg: '#070a12', s: 1.85 }
+  ]},
+  { s: 2.85, e: 5.45, words: [
+    { t: 'के पास', s: 2.85 }, { t: 'चले जाएं', s: 3.45 }, { t: 'तो', s: 4.10 }, { t: 'क्या होगा?', pill: '#ef4444', fg: '#fff', s: 4.45 }
+  ]},
+  { s: 5.50, e: 8.85, words: [
+    { t: 'जैसे ही आप', s: 5.50 }, { t: 'EVENT HORIZON', en: 1, pill: '#fbbf24', fg: '#070a12', s: 6.45 }, { t: 'पार करेंगे,', s: 7.75 }
+  ]},
+  { s: 8.90, e: 12.85, words: [
+    { t: 'दुनिया की', s: 8.90 }, { t: 'LIGHT भी', en: 1, pill: '#38bdf8', fg: '#070a12', s: 9.85 }, { t: 'वापस नहीं', s: 10.95 }, { t: 'लौट पाएगी!', pill: '#ef4444', fg: '#fff', s: 11.85 }
+  ]},
+  // Clip 2 (13.05 .. 24.64)
+  { s: 13.05, e: 15.80, words: [
+    { t: 'पर पहले', s: 13.05 }, { t: 'एक कमाल की', s: 13.85 }, { t: 'चीज़ होगी!', pill: '#38bdf8', fg: '#070a12', s: 14.80 }
+  ]},
+  { s: 15.85, e: 19.30, words: [
+    { t: 'ब्लैक होल की', s: 15.85 }, { t: 'GRAVITY', en: 1, pill: '#fbbf24', fg: '#070a12', s: 16.95 }, { t: 'समय को', s: 17.85 }, { t: 'धीमा कर देगी!', pill: '#38bdf8', fg: '#070a12', s: 18.45 }
+  ]},
+  { s: 19.35, e: 24.64, words: [
+    { t: 'आपके कुछ सेकंड =', s: 19.35 }, { t: 'धरती पर', s: 21.15 }, { t: '100+ YEARS!', en: 1, pill: '#fbbf24', fg: '#070a12', s: 22.15 }, { t: 'गुज़र चुके होंगे', s: 23.45 }
+  ]},
+  // Clip 3 (24.85 .. 37.26)
+  { s: 24.85, e: 28.40, words: [
+    { t: 'अंदर गिरते ही', s: 24.85 }, { t: 'पैरों पर', s: 26.05 }, { t: '10,00,000x', en: 1, pill: '#ef4444', fg: '#fff', s: 26.85 }, { t: 'ग्रैविटी लगेगी', s: 27.65 }
+  ]},
+  { s: 28.45, e: 32.80, words: [
+    { t: 'विज्ञान इसे', s: 28.45 }, { t: 'SPAGHETTIFICATION', en: 1, pill: '#ef4444', fg: '#fff', s: 29.60 }, { t: 'कहता है!', s: 31.65 }
+  ]},
+  { s: 32.85, e: 37.26, words: [
+    { t: 'आपका शरीर', s: 32.85 }, { t: 'पतले धागे', pill: '#a855f7', fg: '#fff', s: 34.15 }, { t: 'की तरह', s: 35.30 }, { t: 'खिंच जाएगा!', pill: '#ef4444', fg: '#fff', s: 36.10 }
+  ]},
+  // Clip 4 (37.45 .. 48.86)
+  { s: 37.45, e: 41.20, words: [
+    { t: 'नीचे आप', s: 37.45 }, { t: 'PHOTON SPHERE', en: 1, pill: '#a855f7', fg: '#fff', s: 38.55 }, { t: 'से गुज़रेंगे', s: 40.15 }
+  ]},
+  { s: 41.25, e: 44.80, words: [
+    { t: 'जहाँ करोड़ों साल', s: 41.25 }, { t: 'पुरानी लाइट', pill: '#38bdf8', fg: '#070a12', s: 42.65 }, { t: 'गोल घूम रही है!', s: 43.80 }
+  ]},
+  { s: 44.85, e: 48.86, words: [
+    { t: 'पीछे मुड़कर आप', s: 44.85 }, { t: 'पूरे ब्रह्मांड का', s: 46.20 }, { t: 'FUTURE', en: 1, pill: '#fbbf24', fg: '#070a12', s: 47.45 }, { t: 'देख पाएंगे!', s: 48.10 }
+  ]},
+  // Clip 5 (49.05 .. 59.31)
+  { s: 49.05, e: 53.20, words: [
+    { t: 'और बिल्कुल बीच में है', s: 49.05 }, { t: 'SINGULARITY', en: 1, pill: '#fbbf24', fg: '#070a12', s: 50.85 }, { t: '— अनंत केंद्र!', s: 52.10 }
+  ]},
+  { s: 53.25, e: 56.50, words: [
+    { t: 'जहाँ समय और', s: 53.25 }, { t: 'PHYSICS के नियम', en: 1, pill: '#38bdf8', fg: '#070a12', s: 54.45 }, { t: 'खत्म हो जाते हैं!', pill: '#ef4444', fg: '#fff', s: 55.60 }
+  ]},
+  { s: 56.55, e: 59.35, words: [
+    { t: 'क्या आप जाएंगे?', pill: '#fbbf24', fg: '#070a12', s: 56.55 }, { t: 'COMMENT करें!', en: 1, pill: '#38bdf8', fg: '#070a12', s: 57.95 }
+  ]}
+];
+
+const tl = gsap.timeline({ paused: true });
+const world = document.getElementById('world');
+
+// Continuous push-through world pans between the 5 stacked plates
+tl.set(world, { y: 0 }, 0)
+  .to(world, { y: -1920, duration: 0.95, ease: 'power3.inOut' }, 12.60)
+  .to(world, { y: -3840, duration: 0.95, ease: 'power3.inOut' }, 24.40)
+  .to(world, { y: -5760, duration: 0.95, ease: 'power3.inOut' }, 37.00)
+  .to(world, { y: -7680, duration: 0.95, ease: 'power3.inOut' }, 48.60);
+
+// Plate subtle zoom drift + bars
+tl.fromTo('#p1 img', { scale: 1.02 }, { scale: 1.12, duration: 12.8, ease: 'none' }, 0)
+  .to('#b1', { width: '100%', duration: 2.2, ease: 'power2.out' }, 1.0)
+  .fromTo('#p2 img', { scale: 1.02 }, { scale: 1.12, duration: 11.8, ease: 'none' }, 13.0)
+  .to('#b2', { width: '92%', duration: 2.0, ease: 'power2.out' }, 14.0)
+  .fromTo('#p3 img', { scale: 1.02 }, { scale: 1.14, duration: 12.6, ease: 'none' }, 24.8)
+  .to('#b3', { width: '98%', duration: 2.2, ease: 'power2.out' }, 25.8)
+  .fromTo('#st3', { scale: 1.5, opacity: 0 }, { scale: 1.0, opacity: 1, duration: 0.55, ease: 'back.out(2)' }, 27.2)
+  .fromTo('#p4 img', { scale: 1.02 }, { scale: 1.12, duration: 11.6, ease: 'none' }, 37.4)
+  .to('#b4', { width: '100%', duration: 2.0, ease: 'power2.out' }, 38.4)
+  .fromTo('#p5 img', { scale: 1.18 }, { scale: 1.32, duration: 10.5, ease: 'none' }, 49.0)
+  .to('#b5', { width: '100%', duration: 2.2, ease: 'power2.out' }, 50.0);
+
+let activeBeatIdx = -1;
+const capWrap = document.getElementById('captionWrap');
+
+function renderDeterministicFrame(t) {
+  tl.time(Math.max(0, Math.min(DUR, t)), false);
+
+  // HUD Phase & Progress
+  let ph = HUD_PHASES[0];
+  for (const p of HUD_PHASES) if (t >= p.t) ph = p;
+  document.getElementById('hudTxt').textContent = ph.txt;
+  document.getElementById('hudDot').style.background = ph.col;
+  document.getElementById('hudDot').style.boxShadow = `0 0 12px ${ph.col}`;
+  document.getElementById('hudFill').style.background = ph.col;
+  document.getElementById('hudFill').style.width = `${Math.min(100, (t / DUR) * 100)}%`;
+
+  // Captions
+  const bIdx = CAPTION_BEATS.findIndex(b => t >= b.s && t <= b.e);
+  if (bIdx !== activeBeatIdx) {
+    activeBeatIdx = bIdx;
+    capWrap.innerHTML = '';
+    if (bIdx >= 0) {
+      const line = document.createElement('div');
+      line.className = 'cap-line';
+      CAPTION_BEATS[bIdx].words.forEach((w, idx) => {
+        const sp = document.createElement('span');
+        sp.className = 'cw' + (w.en ? ' en' : '') + (w.pill ? ' pill' : '');
+        sp.textContent = w.t;
+        if (w.pill) {
+          sp.style.setProperty('--pill-bg', w.pill);
+          sp.style.setProperty('--pill-fg', w.fg || '#070a12');
+        }
+        sp.dataset.idx = idx;
+        line.appendChild(sp);
+      });
+      capWrap.appendChild(line);
+    }
+  }
+  if (bIdx >= 0) {
+    const words = CAPTION_BEATS[bIdx].words;
+    const els = capWrap.querySelectorAll('.cw');
+    words.forEach((w, i) => {
+      const el = els[i];
+      if (!el) return;
+      const dt = t - w.s;
+      if (dt < 0) {
+        el.style.opacity = '0.28';
+        el.style.transform = 'scale(0.92)';
+      } else {
+        el.style.opacity = '1';
+        const pop = dt < 0.18 ? 1 + 0.16 * Math.sin((dt / 0.18) * Math.PI) : 1.0;
+        el.style.transform = `scale(${pop.toFixed(3)})`;
+        if (w.pill) {
+          const p = Math.min(1, dt / 0.18);
+          el.style.setProperty('--p', p.toFixed(3));
+          el.classList.toggle('filled', p >= 0.95);
+        }
+      }
+    });
+  }
+}
+
+window.__setTime = renderDeterministicFrame;
+
+// Live browser playback with synced 1.08x VO
+if (params.get('t') !== null) {
+  renderDeterministicFrame(parseFloat(params.get('t')) || 0);
+} else {
+  const cues = [
+    { id: 'vo1', t: 0.15 }, { id: 'vo2', t: 13.05 }, { id: 'vo3', t: 24.85 },
+    { id: 'vo4', t: 37.45 }, { id: 'vo5', t: 49.05 }
+  ];
+  const fired = new Set();
+  let startMs = null;
+  let playing = true;
+  function tick(now) {
+    if (!startMs) startMs = now;
+    const t = ((now - startMs) / 1000) % DUR;
+    if (t < 0.1) fired.clear();
+    cues.forEach(c => {
+      if (t >= c.t && !fired.has(c.id)) {
+        fired.add(c.id);
+        const a = document.getElementById(c.id);
+        if (a) { a.playbackRate = 1.08; a.currentTime = 0; a.play().catch(()=>{}); }
+      }
+    });
+    renderDeterministicFrame(t);
+    if (playing) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+</script>
+</body>
+</html>
